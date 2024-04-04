@@ -1,0 +1,19 @@
+.timeline {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.movie-title {
+  margin: 0;
+  font-size: 1.5em;
+  font-weight: bold;
+  color: red;
+}
