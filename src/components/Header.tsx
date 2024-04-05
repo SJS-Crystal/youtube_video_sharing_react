@@ -65,7 +65,7 @@ function Header({ setErrorMessage }: { setErrorMessage: (errorMessage: any) => v
   return (
     <header>
       <Link to="/" className='home-link'>
-        <img src={logo} className='logo' />
+        <img src={logo} className='logo' alt=''/>
         <span>Funny Movies</span>
       </Link>
       <div className="user-info">
