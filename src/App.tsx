@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import ErrorMessage from './components/ErrorMessage';
@@ -8,6 +8,16 @@ import './assets/css/App.css';
 
 function App() {
   const [errorMessage, setErrorMessage] = useState<any>(null);
+
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage(null);
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
 
   return (
     <>
