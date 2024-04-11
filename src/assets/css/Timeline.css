@@ -9,6 +9,7 @@
   display: flex;
   align-items: flex-start;
   margin-bottom: 20px;
+  width: 60%;
 }
 
 .movie-title {
@@ -16,4 +17,8 @@
   font-size: 1.5em;
   font-weight: bold;
   color: red;
+}
+
+.video-wrapper {
+  margin-right: 20px;
 }

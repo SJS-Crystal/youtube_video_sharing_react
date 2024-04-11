@@ -4,6 +4,7 @@ import App from '../App';
 
 jest.mock('../components/Header', () => () => <div>Mocked Header</div>);
 jest.mock('../components/ErrorMessage', () => () => <div>Mocked ErrorMessage</div>);
+jest.mock('../components/Notification', () => () => <div>Mocked Notification</div>);
 jest.mock('../pages/Timeline', () => () => <div>Mocked Timeline</div>);
 jest.mock('../pages/ShareVideo', () => () => <div>Mocked ShareVideo</div>);
 
@@ -24,6 +25,11 @@ describe('App', () => {
   test('Should renders ErrorMessage component', async () => {
     renderWithMemoryRouter();
     expect(screen.getByText('Mocked ErrorMessage')).toBeInTheDocument();
+  });
+
+  test('Should renders Notification component', async () => {
+    renderWithMemoryRouter();
+    expect(screen.getByText('Mocked Notification')).toBeInTheDocument();
   });
 
   test('Should navigate to share page when access /share path', () => {

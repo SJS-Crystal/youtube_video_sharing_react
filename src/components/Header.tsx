@@ -10,9 +10,18 @@ interface User {
   token: string;
 }
 
-function Header({ setErrorMessage }: { setErrorMessage: (errorMessage: any) => void }) {
+interface HeaderProps {
+  setErrorMessage: (errorMessage: any) => void;
+  setIsLoggedIn: (isLoggedIn: any) => void;
+  isLoggedIn: any;
+}
+
+function Header({
+  setErrorMessage,
+  setIsLoggedIn,
+  isLoggedIn
+}: HeaderProps) {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -28,10 +37,9 @@ function Header({ setErrorMessage }: { setErrorMessage: (errorMessage: any) => v
     }
   }, []);
 
-  const handleLogin = async () => {
+  const handleAuth = async (url: string) => {
     try {
-      const response = await axios.post('https://e1dc06b594ce46c98593aca2d663a3b0.api.mockbin.io/', {
-      // const response = await axios.post('https://febcaaa116734ffcabd08028c87b883c.api.mockbin.io/', { //TODO: failed to login
+      const response = await axios.post(url, {
         email,
         password,
       });
@@ -47,19 +55,31 @@ function Header({ setErrorMessage }: { setErrorMessage: (errorMessage: any) => v
     }
   };
 
+  const handleLogin = async () => {
+    await handleAuth('http://localhost:1234/api/user/v1/users/login');
+  };
+
+  const handleRegister = async () => {
+    await handleAuth('http://localhost:1234/api/user/v1/users');
+  };
+
   const handleLogout = async () => {
+    const token = Cookies.get('token');
     try {
-      await axios.post('https://e1dc06b594ce46c98593aca2d663a3b0.api.mockbin.io/');
-      // await axios.post('https://febcaaa116734ffcabd08028c87b883c.api.mockbin.io/'); // TODO: failed to logout
-      setUser(null);
-      setIsLoggedIn(false);
-      Cookies.remove('id');
-      Cookies.remove('email');
-      Cookies.remove('token');
-      navigate('/');
-    } catch (e: any) {
-      setErrorMessage(e.response.data.message);
+      await axios.delete('http://localhost:1234/api/user/v1/users/logout', {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+    } catch (error) {
     }
+
+    setUser(null);
+    setIsLoggedIn(false);
+    Cookies.remove('id');
+    Cookies.remove('email');
+    Cookies.remove('token');
+    navigate('/');
   };
 
   return (
@@ -79,7 +99,8 @@ function Header({ setErrorMessage }: { setErrorMessage: (errorMessage: any) => v
           <>
             <input className='input' type="email" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
             <input className='input' type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-            <button className='btn btn-login' onClick={handleLogin}>Login/Register</button>
+            <button className='btn btn-login' onClick={handleLogin}>Login</button>/
+            <button className='btn btn-login' onClick={handleRegister}>Register</button>
           </>
         )}
       </div>

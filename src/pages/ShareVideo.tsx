@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../assets/css/ShareVideo.css';
 import { useCheckLogin } from '../hooks/useCheckLogin';
+import Cookies from 'js-cookie';
 
 function ShareVideo({ setErrorMessage }: { setErrorMessage: (errorMessage: any) => void }){
   useCheckLogin();
@@ -12,11 +13,23 @@ function ShareVideo({ setErrorMessage }: { setErrorMessage: (errorMessage: any) 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      await axios.post('https://e1dc06b594ce46c98593aca2d663a3b0.api.mockbin.io/', { url });
-      // await axios.post('https://febcaaa116734ffcabd08028c87b883c.api.mockbin.io/', { url }); //TODO: failed to submit URL
+      const token = Cookies.get('token');
+      await axios.post('http://localhost:1234/api/user/v1/videos', {
+        url: url,
+      }, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+
       navigate('/');
-    } catch (error) {
-      setErrorMessage('Failed to submit URL. Please try again.');
+    } catch (error: any) {
+      console.log(error);
+      if (error.response.status === 401) {
+        setErrorMessage('You need to re-login to continue');
+        return;
+      }
+      setErrorMessage(error.response.data.message);
     }
   };
 

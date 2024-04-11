@@ -9,10 +9,13 @@ jest.mock('axios');
 const setErrorMessage = jest.fn();
 const navigate = jest.fn();
 
+const cookie_id = '123';
+const cookie_email = 'test@example.com';
+const cookie_token = 'abc123';
 const assumeLoggedIn = () => {
-  Cookies.set('id', '123');
-  Cookies.set('email', 'test@example.com');
-  Cookies.set('token', 'abc123');
+  Cookies.set('id', cookie_id);
+  Cookies.set('email', cookie_email);
+  Cookies.set('token', cookie_token);
 };
 
 const assumeNotLoggedIn = () => {
@@ -66,7 +69,11 @@ describe('ShareVideo', () => {
     fireEvent.click(getByRole('button', { name: 'Share' }));
 
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalledWith('https://e1dc06b594ce46c98593aca2d663a3b0.api.mockbin.io/', { url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' });
+      expect(axios.post).toHaveBeenCalledWith('http://localhost:1234/api/user/v1/videos', { url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }, {
+        headers: {
+          Authorization: cookie_token
+        }
+      });
       expect(navigate).toHaveBeenCalledWith('/');
       expect(setErrorMessage).not.toHaveBeenCalled();
     });
@@ -74,7 +81,14 @@ describe('ShareVideo', () => {
 
   test('Should set an error message on failure', async () => {
     assumeLoggedIn();
-    (axios.post as jest.Mock).mockRejectedValue(new Error());
+    (axios.post as jest.Mock).mockRejectedValue({
+      response: {
+      data: {
+        message: 'Failed to submit URL. Please try again.'
+      },
+      status: 500
+      }
+    });
 
     const { getByLabelText, getByRole } = render(
       <MemoryRouter>
@@ -86,9 +100,44 @@ describe('ShareVideo', () => {
     fireEvent.click(getByRole('button', { name: 'Share' }));
 
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalledWith('https://e1dc06b594ce46c98593aca2d663a3b0.api.mockbin.io/', { url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' });
+      expect(axios.post).toHaveBeenCalledWith('http://localhost:1234/api/user/v1/videos', { url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }, {
+        headers: {
+          Authorization: cookie_token
+        }
+      });
       expect(navigate).not.toHaveBeenCalled();
       expect(setErrorMessage).toHaveBeenCalledWith('Failed to submit URL. Please try again.');
+    });
+  });
+
+  test('Should set an error message when access token is invalid', async () => {
+    assumeLoggedIn();
+    (axios.post as jest.Mock).mockRejectedValue({
+      response: {
+      data: {
+        message: 'error message'
+      },
+      status: 401
+      }
+    });
+
+    const { getByLabelText, getByRole } = render(
+      <MemoryRouter>
+        <ShareVideo setErrorMessage={setErrorMessage} />
+      </MemoryRouter>
+    );
+
+    fireEvent.change(getByLabelText('Youtube URL'), { target: { value: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' } });
+    fireEvent.click(getByRole('button', { name: 'Share' }));
+
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledWith('http://localhost:1234/api/user/v1/videos', { url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }, {
+        headers: {
+          Authorization: cookie_token
+        }
+      });
+      expect(navigate).not.toHaveBeenCalled();
+      expect(setErrorMessage).toHaveBeenCalledWith('You need to re-login to continue');
     });
   });
 });

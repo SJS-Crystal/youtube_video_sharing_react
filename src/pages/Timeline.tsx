@@ -1,11 +1,14 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import axios from 'axios';
+import YouTubePlayer from '../components/YouTubePlayer';
 import '../assets/css/Timeline.css';
+import '../components/YouTubePlayer';
+import { trimString } from '../utils/string';
 
 interface Video {
-  embedUrl: string;
+  youtube_id: string;
   title: string;
-  sharedBy: string;
+  shared_by: string;
   description: string;
 }
 
@@ -28,8 +31,7 @@ function Timeline() {
 
   useEffect(() => {
     setLoading(true);
-    // axios.get(`https://38471cd915f74ff986d67959d6adc46b.api.mockbin.io/`) //TODO: failed to load more videos
-    axios.get(`https://f29b6a67fe134713b8875410e7181093.api.mockbin.io/?page=${page}&limit=5`)
+    axios.get(`http://localhost:1234/api/user/v1/videos?page=${page}&items=5`)
       .then(res => {
         setVideos(prevVideos => [...prevVideos, ...res.data.data]);
         setLoading(false);
@@ -40,21 +42,14 @@ function Timeline() {
   }, [page]);
 
   const renderVideo = (video: Video, index: number) => {
+
     return (
       <li ref={index === videos.length - 1 ? lastVideoElementRef : null} key={index} className='timeline-item'>
-        <iframe
-          width="560"
-          height="315"
-          src={video.embedUrl}
-          title={video.title}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          style={{ marginRight: '20px' }}
-        ></iframe>
+        <YouTubePlayer videoId={video.youtube_id} />
         <div>
-          <h2 className='movie-title'>{video.title}</h2>
-          <p>Shared by: {video.sharedBy}</p>
-          <p>{video.description}</p>
+          <h2 className='movie-title'>{trimString(video.title, 75)}</h2>
+          <p>Shared by: {video.shared_by}</p>
+          <p>{trimString(video.description, 200)}</p>
         </div>
       </li>
     );

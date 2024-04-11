@@ -21,15 +21,15 @@ describe('Timeline', () => {
       data: {
         data: [
           {
-            embedUrl: 'https://www.youtube.com/embed/video1',
+            youtube_id: 'DHKeufhJD-2',
             title: 'Video 1',
-            sharedBy: 'User 1',
+            shared_by: 'User 1',
             description: 'Description 1',
           },
           {
-            embedUrl: 'https://www.youtube.com/embed/video2',
+            youtube_id: 'DHKHJufh566',
             title: 'Video 2',
-            sharedBy: 'User 2',
+            shared_by: 'User 2',
             description: 'Description 2',
           },
         ],
@@ -54,9 +54,9 @@ describe('Timeline', () => {
       data: {
         data: [
           {
-            embedUrl: 'https://www.youtube.com/embed/video1',
+            youtube_id: 'DHKeufhJD-3',
             title: 'Video 3',
-            sharedBy: 'User 3',
+            shared_by: 'User 3',
             description: 'Description 3',
           },
         ],
@@ -66,9 +66,9 @@ describe('Timeline', () => {
       data: {
         data: [
           {
-            embedUrl: 'https://www.youtube.com/embed/video2',
+            youtube_id: 'DHKeufhJD-4',
             title: 'Video 4',
-            sharedBy: 'User 4',
+            shared_by: 'User 4',
             description: 'Description 4',
           },
         ],
