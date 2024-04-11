@@ -5,7 +5,9 @@ import ShareVideo from '../../pages/ShareVideo';
 import * as router from 'react-router';
 import Cookies from 'js-cookie';
 
+const apiUrl = process.env.REACT_APP_API_URL;
 jest.mock('axios');
+
 const setErrorMessage = jest.fn();
 const navigate = jest.fn();
 
@@ -69,7 +71,7 @@ describe('ShareVideo', () => {
     fireEvent.click(getByRole('button', { name: 'Share' }));
 
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalledWith('http://localhost:1234/api/user/v1/videos', { url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }, {
+      expect(axios.post).toHaveBeenCalledWith(`${apiUrl}/api/user/v1/videos`, { url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }, {
         headers: {
           Authorization: cookie_token
         }
@@ -83,10 +85,10 @@ describe('ShareVideo', () => {
     assumeLoggedIn();
     (axios.post as jest.Mock).mockRejectedValue({
       response: {
-      data: {
-        message: 'Failed to submit URL. Please try again.'
-      },
-      status: 500
+        data: {
+          message: 'Failed to submit URL. Please try again.'
+        },
+        status: 500
       }
     });
 
@@ -100,7 +102,7 @@ describe('ShareVideo', () => {
     fireEvent.click(getByRole('button', { name: 'Share' }));
 
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalledWith('http://localhost:1234/api/user/v1/videos', { url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }, {
+      expect(axios.post).toHaveBeenCalledWith(`${apiUrl}/api/user/v1/videos`, { url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }, {
         headers: {
           Authorization: cookie_token
         }
@@ -114,10 +116,10 @@ describe('ShareVideo', () => {
     assumeLoggedIn();
     (axios.post as jest.Mock).mockRejectedValue({
       response: {
-      data: {
-        message: 'error message'
-      },
-      status: 401
+        data: {
+          message: 'error message'
+        },
+        status: 401
       }
     });
 
@@ -131,7 +133,7 @@ describe('ShareVideo', () => {
     fireEvent.click(getByRole('button', { name: 'Share' }));
 
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalledWith('http://localhost:1234/api/user/v1/videos', { url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }, {
+      expect(axios.post).toHaveBeenCalledWith(`${apiUrl}/api/user/v1/videos`, { url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }, {
         headers: {
           Authorization: cookie_token
         }

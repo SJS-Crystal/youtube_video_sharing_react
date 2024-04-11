@@ -5,6 +5,8 @@ import axios from 'axios';
 import Header from '../../components/Header';
 import Cookies from 'js-cookie';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 jest.mock('axios');
 (axios.post as jest.Mock).mockReset();
 
@@ -31,7 +33,7 @@ describe('Header', () => {
 
   const renderHeader = () => {
     render(
-      <HeaderWrapper/>
+      <HeaderWrapper />
     );
   };
 
@@ -64,7 +66,7 @@ describe('Header', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
 
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalledWith('http://localhost:1234/api/user/v1/users/login', {
+      expect(axios.post).toHaveBeenCalledWith(`${apiUrl}/api/user/v1/users/login`, {
         email: 'test@example.com',
         password: 'password123',
       });
@@ -93,7 +95,7 @@ describe('Header', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
 
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalledWith('http://localhost:1234/api/user/v1/users/login', {
+      expect(axios.post).toHaveBeenCalledWith(`${apiUrl}/api/user/v1/users/login`, {
         email: 'test@example.com',
         password: 'password123',
       });
@@ -123,7 +125,7 @@ describe('Header', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Register' }));
 
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalledWith('http://localhost:1234/api/user/v1/users', {
+      expect(axios.post).toHaveBeenCalledWith(`${apiUrl}/api/user/v1/users`, {
         email: 'test@example.com',
         password: 'password123',
       });
@@ -152,7 +154,7 @@ describe('Header', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Login' }));
 
     await waitFor(() => {
-      expect(axios.post).toHaveBeenCalledWith('http://localhost:1234/api/user/v1/users/login', {
+      expect(axios.post).toHaveBeenCalledWith(`${apiUrl}/api/user/v1/users/login`, {
         email: 'test@example.com',
         password: 'password123',
       });
@@ -178,7 +180,7 @@ describe('Header', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Logout' }));
 
     await waitFor(() => {
-      expect(axios.delete).toHaveBeenCalledWith('http://localhost:1234/api/user/v1/users/logout', {
+      expect(axios.delete).toHaveBeenCalledWith(`${apiUrl}/api/user/v1/users/logout`, {
         headers: {
           Authorization: 'abc123',
         },
@@ -212,7 +214,7 @@ describe('Header', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Logout' }));
 
     await waitFor(() => {
-      expect(axios.delete).toHaveBeenCalledWith('http://localhost:1234/api/user/v1/users/logout', {
+      expect(axios.delete).toHaveBeenCalledWith(`${apiUrl}/api/user/v1/users/logout`, {
         headers: {
           Authorization: 'abc123',
         },

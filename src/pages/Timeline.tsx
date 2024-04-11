@@ -5,6 +5,7 @@ import '../assets/css/Timeline.css';
 import '../components/YouTubePlayer';
 import { trimString } from '../utils/string';
 
+const apiUrl = process.env.REACT_APP_API_URL;
 interface Video {
   youtube_id: string;
   title: string;
@@ -31,7 +32,7 @@ function Timeline() {
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`http://localhost:1234/api/user/v1/videos?page=${page}&items=5`)
+    axios.get(`${apiUrl}/api/user/v1/videos?page=${page}&items=5`)
       .then(res => {
         setVideos(prevVideos => [...prevVideos, ...res.data.data]);
         setLoading(false);

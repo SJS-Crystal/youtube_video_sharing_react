@@ -4,6 +4,7 @@ import '../assets/css/Notification.css';
 import { trimString } from '../utils/string';
 import Cookies from 'js-cookie';
 
+const websocketUrl = process.env.REACT_APP_WEBSOCKET_URL;
 interface Notification {
   id: number;
   title: string;
@@ -19,7 +20,7 @@ function Notification({ isLoggedIn }: { isLoggedIn: boolean }) {
     if (!isLoggedIn) return;
     const token = Cookies.get('token')
     try {
-      const consumer = createConsumer(`ws://localhost:1234/cable?token=${token}`);
+      const consumer = createConsumer(`${websocketUrl}?token=${token}`);
       const subscription = consumer.subscriptions.create({ channel: 'NotificationChannel'}, {
         received: (data: any) => {
           const newNotification = { id: id, title: data.title, shared_by: data.shared_by, youtube_id: data.youtube_id};
@@ -40,8 +41,6 @@ function Notification({ isLoggedIn }: { isLoggedIn: boolean }) {
 
     }
   }, [id, isLoggedIn]);
-
-  // console.log(notifications)
 
   if (notifications.length === 0) return <></>;
 

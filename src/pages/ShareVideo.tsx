@@ -5,7 +5,9 @@ import '../assets/css/ShareVideo.css';
 import { useCheckLogin } from '../hooks/useCheckLogin';
 import Cookies from 'js-cookie';
 
-function ShareVideo({ setErrorMessage }: { setErrorMessage: (errorMessage: any) => void }){
+const apiUrl = process.env.REACT_APP_API_URL;
+
+function ShareVideo({ setErrorMessage }: { setErrorMessage: (errorMessage: any) => void }) {
   useCheckLogin();
   const [url, setUrl] = useState('');
   const navigate = useNavigate();
@@ -14,7 +16,7 @@ function ShareVideo({ setErrorMessage }: { setErrorMessage: (errorMessage: any) 
     event.preventDefault();
     try {
       const token = Cookies.get('token');
-      await axios.post('http://localhost:1234/api/user/v1/videos', {
+      await axios.post(`${apiUrl}/api/user/v1/videos`, {
         url: url,
       }, {
         headers: {
@@ -24,7 +26,6 @@ function ShareVideo({ setErrorMessage }: { setErrorMessage: (errorMessage: any) 
 
       navigate('/');
     } catch (error: any) {
-      console.log(error);
       if (error.response.status === 401) {
         setErrorMessage('You need to re-login to continue');
         return;

@@ -4,6 +4,8 @@ import logo from '../logo.svg';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 
+const apiUrl = process.env.REACT_APP_API_URL;
+
 interface User {
   id: string;
   email: string;
@@ -56,17 +58,17 @@ function Header({
   };
 
   const handleLogin = async () => {
-    await handleAuth('http://localhost:1234/api/user/v1/users/login');
+    await handleAuth(`${apiUrl}/api/user/v1/users/login`);
   };
 
   const handleRegister = async () => {
-    await handleAuth('http://localhost:1234/api/user/v1/users');
+    await handleAuth(`${apiUrl}/api/user/v1/users`);
   };
 
   const handleLogout = async () => {
     const token = Cookies.get('token');
     try {
-      await axios.delete('http://localhost:1234/api/user/v1/users/logout', {
+      await axios.delete(`${apiUrl}/api/user/v1/users/logout`, {
         headers: {
           Authorization: `${token}`,
         },
@@ -85,7 +87,7 @@ function Header({
   return (
     <header>
       <Link to="/" className='home-link'>
-        <img src={logo} className='logo' alt=''/>
+        <img src={logo} className='logo' alt='' />
         <span>Funny Movies</span>
       </Link>
       <div className="user-info">
