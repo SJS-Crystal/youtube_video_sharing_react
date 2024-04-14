@@ -21,7 +21,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     environment:
-      name: test
+      name: qa
       # url: ${{ steps.deploy.outputs.url }}
     steps:
     - uses: actions/checkout@v2
