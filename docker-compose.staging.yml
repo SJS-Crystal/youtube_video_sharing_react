@@ -1,0 +1,10 @@
+version: '3'
+services:
+  frontend:
+    # image: ${IMAGE_NAME}:${IMAGE_TAG}
+    image: crystal505/videosharing_react:1.0
+    ports:
+      - 443:443
+    volumes:
+      - .:/app
+      - /etc/letsencrypt:/etc/letsencrypt
