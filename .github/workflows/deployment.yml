@@ -1,0 +1,37 @@
+name: Manual Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target Environment (qa, staging, production)'
+        required: true
+      qaServer:
+        description: 'QA Environment Server Identifier (Only for QA)'
+        required: false  # This can be optional unless the environment is QA
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '14'
+      - name: Install Dependencies
+        run: npm install
+      - name: Deploy
+        run: |
+          if [ "${{ github.event.inputs.environment }}" == "qa" ]; then
+            echo "Deploying to QA Server: ${{ github.event.inputs.qaServer }}"
+            # Put your deployment command here, utilize ${{ github.event.inputs.qaServer }} variable
+            # Example: deploy-to-qa.sh ${{ github.event.inputs.qaServer }}
+          elif [ "${{ github.event.inputs.environment }}" == "staging" ]; then
+            # Deploy to Staging
+            echo "Deploying to Staging..."
+          elif [ "${{ github.event.inputs.environment }}" == "production" ]; then
+            # Deploy to Production
+            echo "Deploying to Production..."
+          fi
