@@ -20,6 +20,9 @@ jobs:
   docker_build:
     needs: test
     runs-on: ubuntu-latest
+    environment:
+      name: test
+      # url: ${{ steps.deploy.outputs.url }}
     steps:
     - uses: actions/checkout@v2
 
