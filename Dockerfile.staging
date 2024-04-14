@@ -1,4 +1,4 @@
-FROM node:21.7.3-alpine3.19 as react_builder
+FROM node:21.7.1 as react_builder
 
 # Set the working directory
 WORKDIR /app
@@ -15,7 +15,7 @@ COPY . .
 # Build the React app
 RUN npm run build
 
-FROM nginx:stable-bullseye
+FROM nginx:1.25.4
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
 COPY --from=react_builder /app/build .
