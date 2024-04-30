@@ -8,3 +8,6 @@ services:
     volumes:
       - .:/app
       - /etc/letsencrypt:/etc/letsencrypt
+    environment:
+     - REACT_APP_API_URL=${REACT_APP_API_URL}
+     - REACT_APP_WEBSOCKET_URL=${REACT_APP_WEBSOCKET_URL}
