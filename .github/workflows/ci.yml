@@ -49,6 +49,7 @@ jobs:
     environment:
       name: test
     steps:
+    - uses: actions/checkout@v2
     - name: Deploy to Server
       run: |
         echo "${{ secrets.SERVER_SSH_KEY }}" > server_ssh_file
@@ -61,6 +62,8 @@ jobs:
           export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           cd /home/project/
+          docker-compose -f docker-compose.staging.yml down
+          docker-compose -f docker-compose.staging.yml up -d
         EOF
       # uses: actions/checkout@v2
       # with:
