@@ -52,6 +52,7 @@ jobs:
     - name: Deploy to Server
       run: |
         echo "${{ secrets.SERVER_SSH_KEY }}" > server_ssh_file
+        chmod 400 server_ssh_file
         ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} 'mkdir -p /home/project/'
         scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.staging.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/project/
         ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
