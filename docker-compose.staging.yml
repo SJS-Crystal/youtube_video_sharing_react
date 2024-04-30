@@ -2,7 +2,7 @@ version: '3'
 services:
   frontend:
     # image: ${IMAGE_NAME}:${IMAGE_TAG}
-    image: crystal505/videosharing_react_test:1407a083
+    image: crystal505/videosharing_react_test:f0accd27
     ports:
       - 443:443
     volumes:
