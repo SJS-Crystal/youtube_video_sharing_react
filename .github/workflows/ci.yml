@@ -49,8 +49,8 @@ jobs:
     environment:
       name: test
     steps:
+    - uses: actions/checkout@v2
     - name: Copy docker-compose.staging.yml
-      uses: actions/checkout@v2
       run: |
         echo "${{ secrets.SERVER_SSH_KEY }}" > server_ssh_file
         chmod 400 server_ssh_file
