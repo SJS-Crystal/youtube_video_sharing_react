@@ -1,46 +1,18 @@
 # Getting Started with Create React App
+This is project for people can share any youtube videos. And other logged in use can receive notification when someone share new video.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Get up
+1. clone repo
+2. `docker-compose up`
+=> It should run in http://localhost:4000/
 
-## Available Scripts
+## Run test
+1. `docker-compose run frontend npm test`
 
-In the project directory, you can run:
+## Deployment
+### Link SSH key
+1. Create ssh key: run `ssh-keygen` and follow assist prompt, and you have a public key and private key.
+2. Copy SSH public key to server: `ssh-copy-id -i <path_to_publib_key> <username>@<host_ip>`.Example: `ssh-copy-id -i ~/.ssh/id_rsa.pub root@188.166.236.134`
+3. If this is first time you connect to this host server, maybe you see a prompt like **Are you sure you want to continue connecting (yes/no)?**, let type `yes`
+4. `cat ~/.ssh/id_rsa` to get ssh private key and copy this to set **SERVER_SSH_KEY** secret on github. (*you can adjust ~/.ssh/id_rsa to your file you create above*)
 
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).

@@ -22,7 +22,6 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: test
-      # url: ${{ steps.deploy.outputs.url }}
     steps:
     - uses: actions/checkout@v2
 
@@ -40,3 +39,37 @@ jobs:
         docker build . -f Dockerfile.staging -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
+    - name: Get the image tag
+      id: vars
+      run: echo "::set-output name=IMAGE_TAG::${GITHUB_SHA::8}"
+
+  deploy:
+    needs: docker_build
+    runs-on: ubuntu-latest
+    environment:
+      name: test
+    steps:
+    - name: Deploy to Server
+      run: |
+        ssh -i ${{ secrets.SERVER_SSH_KEY }} -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} 'mkdir -p /home/project/'
+        scp -i ${{ secrets.SERVER_SSH_KEY }} -o StrictHostKeyChecking=no docker-compose.staging.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/project/
+        ssh -i ${{ secrets.SERVER_SSH_KEY }} -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+          export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+          export DOCKER_IMAGE_TAG=${{ needs.docker_build.outputs.IMAGE_TAG }}
+          export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
+          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          cd /home/project/
+          docker-compose -f docker-compose.staging.yml down
+          docker-compose -f docker-compose.staging.yml up -d
+        EOF
+      # uses: actions/checkout@v2
+      # with:
+      #   host: ${{ secrets.SERVER_HOST }}
+      #   username: ${{ secrets.SERVER_USER }}
+      #   key: ${{ secrets.SERVER_SSH_KEY }}
+      #   script: |
+      #     docker login -u ${{ secrets.DOCKER_USERNAME }} --password ${{ secrets.DOCKER_TOKEN }}
+      #     docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ needs.docker_build.outputs.IMAGE_TAG }}
+      #     docker stop my_container || true
+      #     docker rm my_container || true
+      #     docker run -d --name my_container -p 80:80 ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${{ needs.docker_build.outputs.IMAGE_TAG }}

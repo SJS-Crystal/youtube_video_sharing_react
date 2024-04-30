@@ -1,13 +1,10 @@
 version: '3'
 services:
   frontend:
-    # image: ${IMAGE_NAME}:${IMAGE_TAG}
-    image: crystal505/videosharing_react_test:9b5a67b4
+    image: ${DOCKER_USERNAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
+    # image: crystal505/videosharing_react_test:e07d421c
     ports:
       - 443:443
     volumes:
       - .:/app
       - /etc/letsencrypt:/etc/letsencrypt
-    environment:
-     - REACT_APP_API_URL=${REACT_APP_API_URL}
-     - REACT_APP_WEBSOCKET_URL=${REACT_APP_WEBSOCKET_URL}
