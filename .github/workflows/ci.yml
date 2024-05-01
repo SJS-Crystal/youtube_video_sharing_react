@@ -69,7 +69,7 @@ jobs:
           cd /home/project/
           docker-compose -f docker-compose.staging.yml down
 
-          export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} \
-                 DOCKER_IMAGE_TAG=${{ needs.docker_build.outputs.IMAGE_TAG }} \
-                 DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }} && \
-                 docker-compose -f docker-compose.staging.yml up -d
+          DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} \
+          DOCKER_IMAGE_TAG=${{ needs.docker_build.outputs.IMAGE_TAG }} \
+          DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }} && \
+          docker-compose -f docker-compose.staging.yml up -d
