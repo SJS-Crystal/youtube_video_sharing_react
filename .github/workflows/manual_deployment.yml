@@ -37,7 +37,8 @@ jobs:
 
     - name: Extract and set the latest image tag
       run: |
-        echo "latest_image_tag=$(cat image-tag/image_tag.txt)" >> $GITHUB_ENV
+        latest_image_tag = `cat image_tag.txt`
+        echo "latest_image_tag=$latest_image_tag" >> $GITHUB_ENV
 
     - name: Set DOCKER_IMAGE_TAG environment variable conditionally
       run: |
