@@ -1,8 +1,8 @@
 name: Continuous Integration
 
 on:
-  # pull_request:
-  #   branches: [develop, main] # all PRs with develop, main branch target for testing
+  pull_request:
+    branches: [develop, main] # all PRs with develop, main branch target for testing
   workflow_dispatch:
     inputs:
       DOCKER_IMAGE_TAG:
