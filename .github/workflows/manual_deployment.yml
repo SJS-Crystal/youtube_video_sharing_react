@@ -15,8 +15,7 @@ on:
       #   required: false  # This can be optional unless the environment is QA
 
 jobs:
-  deploy:
-    needs: docker_build
+  manual_deploy:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'workflow_dispatch' }}
 
