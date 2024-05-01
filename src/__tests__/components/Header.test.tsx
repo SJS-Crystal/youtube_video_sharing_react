@@ -40,7 +40,7 @@ describe('Header', () => {
   test('Should render the header component', () => {
     renderHeader();
 
-    expect(screen.getByText('Funny Movies 123')).toBeInTheDocument();
+    expect(screen.getByText('Funny Movies')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Email')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Password')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Register' })).toBeInTheDocument();
