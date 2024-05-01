@@ -66,11 +66,10 @@ jobs:
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-          export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-          export DOCKER_IMAGE_TAG=${{ needs.docker_build.outputs.IMAGE_TAG }}
-          export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
-
           cd /home/project/
           docker-compose -f docker-compose.staging.yml down
+
+          DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} \
+          DOCKER_IMAGE_TAG=${{ needs.docker_build.outputs.IMAGE_TAG }} \
+          DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }} \
           docker-compose -f docker-compose.staging.yml up -d
