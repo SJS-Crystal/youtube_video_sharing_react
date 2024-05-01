@@ -43,7 +43,7 @@ jobs:
     #     docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
     - name: Get the image tag
       id: get_image_tag
-      run: echo "IMAGE_TAG::${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
+      run: echo "IMAGE_TAG=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
 
   deploy:
     needs: docker_build
