@@ -62,6 +62,8 @@ jobs:
   deploy:
     needs: docker_build
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+
     environment:
       name: test
     steps:
