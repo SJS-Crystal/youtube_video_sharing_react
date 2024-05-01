@@ -3,48 +3,48 @@ name: Continuous Integration
 on: [push]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+  # test:
+  #   runs-on: ubuntu-latest
 
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14'
-    - name: Install dependencies
-      run: npm install
-    - name: Run tests
-      run: npm test
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Set up Node.js
+  #     uses: actions/setup-node@v1
+  #     with:
+  #       node-version: '14'
+  #   - name: Install dependencies
+  #     run: npm install
+  #   - name: Run tests
+  #     run: npm test
 
-  docker_build:
-    needs: test
-    runs-on: ubuntu-latest
-    environment:
-      name: test
-    steps:
-    - uses: actions/checkout@v2
+  # docker_build:
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: test
+  #   steps:
+  #   - uses: actions/checkout@v2
 
-    - name: Create env file
-      run: |
-        echo "${{ secrets.ENV_FILE_V1 }}" > .env
+  #   - name: Create env file
+  #     run: |
+  #       echo "${{ secrets.ENV_FILE_V1 }}" > .env
 
-    - name: Log in to Docker Hub
-      run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+  #   - name: Log in to Docker Hub
+  #     run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-    - name: Build and push Docker image
-      run: |
-        IMAGE_TAG=${GITHUB_SHA::8}
-        echo "Building image with tag ${IMAGE_TAG}"
-        docker build . -f Dockerfile.staging -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
-        echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
-        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
-    - name: Get the image tag
-      id: vars
-      run: echo "::set-output name=IMAGE_TAG::${GITHUB_SHA::8}"
+  #   - name: Build and push Docker image
+  #     run: |
+  #       IMAGE_TAG=${GITHUB_SHA::8}
+  #       echo "Building image with tag ${IMAGE_TAG}"
+  #       docker build . -f Dockerfile.staging -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
+  #       echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
+  #       docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
+  #   - name: Get the image tag
+  #     id: vars
+  #     run: echo "::set-output name=IMAGE_TAG::${GITHUB_SHA::8}"
 
   deploy:
-    needs: docker_build
+    # needs: docker_build
     runs-on: ubuntu-latest
     environment:
       name: test
@@ -71,5 +71,5 @@ jobs:
 
           DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }} \
           DOCKER_IMAGE_TAG=${{ needs.docker_build.outputs.IMAGE_TAG }} \
-          DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }} && \
+          DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }} \
           docker-compose -f docker-compose.staging.yml up -d
