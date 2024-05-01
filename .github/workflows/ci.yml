@@ -1,6 +1,21 @@
 name: Continuous Integration
 
-on: [push]
+on:
+  pull_request:
+    branches: [develop] # all PRs with develop branch target for testing
+  workflow_dispatch:
+    inputs:
+      DOCKER_IMAGE_TAG:
+        description: 'Docker image tag (leave empty to use automatic from docker_build job)'
+        required: false
+        default: ''
+      # environment:
+      #   description: 'Target Environment (qa, staging, production)'
+      #   required: true
+      # qaServer:
+      #   description: 'QA Environment Server Identifier (Only for QA)'
+      #   required: false  # This can be optional unless the environment is QA
+
 
 jobs:
   test:
@@ -50,6 +65,13 @@ jobs:
     environment:
       name: test
     steps:
+    # - name: Check branch
+    #   if: github.event_name == 'workflow_dispatch'
+    #   run: |
+    #     if [[ "${{ github.ref }}" != "refs/heads/main" && "${{ github.ref }}" != "refs/heads/development" ]]; then
+    #       echo "Manual workflow dispatch is only allowed on the main or development branches."
+    #       exit 1
+    #     fi
     - uses: actions/checkout@v2
     - name: Deploy to Server
       run: |
@@ -59,7 +81,7 @@ jobs:
         scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.staging.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/project/
         ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
           export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-          export DOCKER_IMAGE_TAG=${{ needs.docker_build.outputs.IMAGE_TAG }}
+          export DOCKER_IMAGE_TAG=${{ github.event.inputs.DOCKER_IMAGE_TAG || needs.docker_build.outputs.IMAGE_TAG }}
           export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           cd /home/project/
