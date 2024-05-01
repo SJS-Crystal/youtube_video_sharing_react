@@ -29,11 +29,6 @@ jobs:
     #       exit 1
     #     fi
 
-    - name: Load image-tag.txt from artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: image_tag
-
     - uses: actions/checkout@v2
     - name: Deploy to Server
       run: |
