@@ -1,8 +1,21 @@
-name: CI_CD
+name: Continuous Integration
 
 on:
   pull_request:
     branches: [develop, main] # all PRs with develop, main branch target for testing
+  workflow_dispatch:
+    inputs:
+      DOCKER_IMAGE_TAG:
+        description: 'Docker image tag (leave empty to use automatic from docker_build job)'
+        required: false
+        default: ''
+      # environment:
+      #   description: 'Target Environment (qa, staging, production)'
+      #   required: true
+      # qaServer:
+      #   description: 'QA Environment Server Identifier (Only for QA)'
+      #   required: false  # This can be optional unless the environment is QA
+
 
 jobs:
   test:
@@ -46,22 +59,21 @@ jobs:
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
 
-      - name: Create image-tag.txt
-        shell: bash
-        run: |
-          echo ${GITHUB_SHA::8} > image-tag.txt
-      - name: Save image-tag.txt to artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: image_tag
-          path: image-tag.txt
-
   deploy:
     needs: docker_build
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+
     environment:
       name: test
     steps:
+    # - name: Check branch
+    #   if: github.event_name == 'workflow_dispatch'
+    #   run: |
+    #     if [[ "${{ github.ref }}" != "refs/heads/main" && "${{ github.ref }}" != "refs/heads/development" ]]; then
+    #       echo "Manual workflow dispatch is only allowed on the main or development branches."
+    #       exit 1
+    #     fi
     - uses: actions/checkout@v2
     - name: Deploy to Server
       run: |
