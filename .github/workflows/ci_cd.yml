@@ -19,6 +19,7 @@ jobs:
     - name: Run tests
       run: npm test
 
+
   docker_build:
     needs: test
     runs-on: ubuntu-latest
