@@ -88,7 +88,7 @@ function Header({
     <header>
       <Link to="/" className='home-link'>
         <img src={logo} className='logo' alt='' />
-        <span>Funny Movies</span>
+        <span>Funny Movies 123</span>
       </Link>
       <div className="user-info">
         {isLoggedIn ? (
