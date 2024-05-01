@@ -46,6 +46,16 @@ jobs:
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
 
+    - name: Create image-tag.txt
+      shell: bash
+      run: |
+        echo ${GITHUB_SHA::8} > image-tag.txt
+    - name: Save image-tag.txt to artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: image_tag
+        path: image-tag.txt
+
   deploy:
     needs: docker_build
     runs-on: ubuntu-latest
