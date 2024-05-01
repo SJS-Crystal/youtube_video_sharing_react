@@ -5,8 +5,7 @@ on:
     inputs:
       DOCKER_IMAGE_TAG:
         description: 'Docker image tag (leave empty to use automatic from docker_build job)'
-        required: false
-        default: ''
+        required: true
       # environment:
       #   description: 'Target Environment (qa, staging, production)'
       #   required: true
@@ -35,20 +34,6 @@ jobs:
       with:
         name: image_tag
 
-    - name: Extract and set the latest image tag
-      run: |
-        latest_image_tag = `cat image_tag.txt`
-        echo "latest_image_tag=$latest_image_tag" >> $GITHUB_ENV
-
-    - name: Set DOCKER_IMAGE_TAG environment variable conditionally
-      run: |
-        if [ -z "${{ github.event.inputs.DOCKER_IMAGE_TAG }}" ]; then
-          export DOCKER_IMAGE_TAG=$latest_image_tag
-          echo "DOCKER_IMAGE_TAG=$DOCKER_IMAGE_TAG" >> $GITHUB_ENV
-        else
-          echo "DOCKER_IMAGE_TAG=${{ github.event.inputs.DOCKER_IMAGE_TAG }}" >> $GITHUB_ENV
-        fi
-
     - uses: actions/checkout@v2
     - name: Deploy to Server
       run: |
@@ -59,7 +44,7 @@ jobs:
         scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.staging.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/project/
         ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
           export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-          export DOCKER_IMAGE_TAG=$DOCKER_IMAGE_TAG
+          export DOCKER_IMAGE_TAG=${{ github.event.inputs.DOCKER_IMAGE_TAG }}
           export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           cd /home/project/
