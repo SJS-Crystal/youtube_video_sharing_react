@@ -2,7 +2,6 @@ version: '3'
 services:
   frontend:
     image: ${DOCKER_USERNAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
-    # image: crystal505/videosharing_react_test:e07d421c
     ports:
       - 443:443
     volumes:
