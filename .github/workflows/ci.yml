@@ -22,6 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: test
+    outputs:
+      IMAGE_TAG: ${{ steps.get_image_tag.outputs.IMAGE_TAG }}
     steps:
     - uses: actions/checkout@v2
 
@@ -40,8 +42,8 @@ jobs:
     #     echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
     #     docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
     - name: Get the image tag
-      id: vars
-      run: echo "::set-output name=IMAGE_TAG::${GITHUB_SHA::8}"
+      id: get_image_tag
+      run: echo "IMAGE_TAG::${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
 
   deploy:
     needs: docker_build
