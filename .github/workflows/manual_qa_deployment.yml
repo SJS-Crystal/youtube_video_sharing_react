@@ -1,0 +1,73 @@
+# example SERVERS_INFO secret variable:
+# {
+#   "1": {"host": "xxxx", "user": "xxx", "ssh_key": "xxx"},
+#   "2": {"host": "yyyy", "user": "yyy", "ssh_key": "yyy"}
+# }
+
+name: Manual deploy to QA server
+
+on:
+  workflow_dispatch:
+    inputs:
+      DOCKER_IMAGE_TAG:
+        description: 'Docker image tag'
+        required: true
+      serverSelection:
+        description: 'Enter server number (e.g., 1 for SERVER1, 2 for SERVER2)'
+        required: true
+        type: string
+
+jobs:
+  # this job make sure restrict everyone can not run jobs that require this job.
+  approval:
+    runs-on: ubuntu-latest
+    environment:
+      name: approval_environment # in this environment, specify people or teams that may approve workflow
+
+  manual_deploy:
+    needs: [approval]
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' }}
+
+    environment:
+      name: test
+    steps:
+    # - name: Check branch
+    #   if: github.event_name == 'workflow_dispatch'
+    #   run: |
+    #     if [[ "${{ github.ref }}" != "refs/heads/main" && "${{ github.ref }}" != "refs/heads/development" ]]; then
+    #       echo "Manual workflow dispatch is only allowed on the main or development branches."
+    #       exit 1
+    #     fi
+
+    - name: Parse Server Information JSON
+      run: |
+        SERVERS_INFO_JSON='${{ secrets.SERVERS_INFO }}'
+        SERVER_SELECTION=${{ github.event.inputs.serverSelection }}
+
+        SERVER_INFO=$(echo $SERVERS_INFO_JSON | jq --arg key "$SERVER_SELECTION" '.[$key]')
+
+        HOST=$(echo $SERVER_INFO | jq -r '.host')
+        USER=$(echo $SERVER_INFO | jq -r '.user')
+        SSH_KEY=$(echo $SERVER_INFO | jq -r '.ssh_key')
+
+        echo "SERVER_HOST=$HOST" >> $GITHUB_ENV
+        echo "SERVER_USER=$USER" >> $GITHUB_ENV
+        echo "SERVER_SSH_KEY=$SSH_KEY" >> $GITHUB_ENV
+
+    - uses: actions/checkout@v2
+    - name: Deploy to Server
+      run: |
+        echo "${{ env.SERVER_SSH_KEY }}" > server_ssh_file
+        chmod 400 server_ssh_file
+        ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} 'mkdir -p /home/project/'
+        scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.staging.yml ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/project/
+        ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} << 'EOF'
+          export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+          export DOCKER_IMAGE_TAG=${{ github.event.inputs.DOCKER_IMAGE_TAG }}
+          export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
+          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          cd /home/project/
+          docker-compose -f docker-compose.staging.yml down
+          docker-compose -f docker-compose.staging.yml up -d
+        EOF
