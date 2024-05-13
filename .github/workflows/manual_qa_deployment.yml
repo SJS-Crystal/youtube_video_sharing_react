@@ -23,6 +23,9 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: approval_environment # in this environment, specify people or teams that may approve workflow
+    steps:
+      - name: Wait for approval
+        run: echo "Waiting for admin approval..."
 
   manual_deploy:
     needs: [approval]
