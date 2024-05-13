@@ -58,9 +58,20 @@ jobs:
       name: test
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Pre-flight check for SERVER_HOST
+      id: prefight
+      run: |
+        if [ -z "${{ secrets.SERVER_HOST }}" ]; then
+          echo "SERVER_HOST is not set. Skipping subsequent steps."
+          echo "::set-output name=skip::true"
+        else
+          echo "SERVER_HOST is set. Proceeding with deployment."
+          echo "::set-output name=skip::false"
+        fi
+
     - name: Deploy to Server
-      if: ${{ secrets.SERVER_HOST != '' }}
+      if: steps.prefight.outputs.skip != 'true'
+    - uses: actions/checkout@v2
       run: |
         echo "${{ secrets.SERVER_SSH_KEY }}" > server_ssh_file
         chmod 400 server_ssh_file
