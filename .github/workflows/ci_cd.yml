@@ -53,7 +53,7 @@ jobs:
   deploy:
     needs: docker_build
     runs-on: ubuntu-latest
-    if: ${{ secrets.SERVER_HOST != '' }}
+    if: secrets.SERVER_HOST != ''
 
     environment:
       name: test
