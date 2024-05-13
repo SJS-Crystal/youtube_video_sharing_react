@@ -58,8 +58,8 @@ jobs:
       name: test
 
     steps:
-    - uses: actions/checkout@v2
     - name: Pre-flight check for SERVER_HOST
+    - uses: actions/checkout@v2
       id: prefight
       run: |
         if [ -z "${{ secrets.SERVER_HOST }}" ]; then
