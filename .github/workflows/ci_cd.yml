@@ -58,6 +58,8 @@ jobs:
       name: test
 
     steps:
+    - uses: actions/checkout@v2
+
     - name: Pre-flight check for SERVER_HOST
       id: prefight
       run: |
@@ -70,7 +72,6 @@ jobs:
         fi
 
     - name: Deploy to Server
-      uses: actions/checkout@v2
       if: steps.prefight.outputs.skip != 'true'
       run: |
         echo "${{ secrets.SERVER_SSH_KEY }}" > server_ssh_file
