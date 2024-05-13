@@ -59,7 +59,6 @@ jobs:
 
     steps:
     - name: Pre-flight check for SERVER_HOST
-    - uses: actions/checkout@v2
       id: prefight
       run: |
         if [ -z "${{ secrets.SERVER_HOST }}" ]; then
@@ -71,8 +70,8 @@ jobs:
         fi
 
     - name: Deploy to Server
+      uses: actions/checkout@v2
       if: steps.prefight.outputs.skip != 'true'
-    - uses: actions/checkout@v2
       run: |
         echo "${{ secrets.SERVER_SSH_KEY }}" > server_ssh_file
         chmod 400 server_ssh_file
