@@ -24,7 +24,6 @@ jobs:
     environment:
       name: approval_environment # in this environment, specify people or teams that may approve workflow
     steps:
-      - uses: actions/checkout@v2
       - name: Wait for approval
         run: echo "Waiting for admin approval..."
 
