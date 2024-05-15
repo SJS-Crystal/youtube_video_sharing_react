@@ -1,10 +1,6 @@
 name: CI CD
 
 on:
-  # push:
-  #   branches: # These branches serve Staging/UAT
-  #     - develop
-
   pull_request:
     branches: # These branches serve QA/Testing site
     - develop
