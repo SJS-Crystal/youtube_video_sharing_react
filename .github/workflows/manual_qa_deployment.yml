@@ -1,3 +1,5 @@
+# This file is used in case, there are multi QA server and want to choose which one to deploy
+
 # example SERVERS_INFO secret variable:
 # {
 #   "1": {"host": "xxxx", "user": "xxx", "ssh_key": "xxx"},
