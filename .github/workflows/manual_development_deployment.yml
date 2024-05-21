@@ -6,7 +6,7 @@
 #   "2": {"host": "yyyy", "user": "yyy", "ssh_key": "yyy"}
 # }
 
-name: Manual deploy to specify staging server
+name: Manual deploy to specify development server
 
 on:
   workflow_dispatch:
@@ -24,7 +24,7 @@ jobs:
   approval:
     runs-on: ubuntu-latest
     environment:
-      name: approval_staging_environment # in this environment, specify people or teams that may approve workflow
+      name: approval_development_environment # in this environment, specify people or teams that may approve workflow
     steps:
       - name: Wait for approval
         run: echo "Waiting for admin approval..."
@@ -35,7 +35,7 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' }}
 
     environment:
-      name: staging
+      name: development
     steps:
     - name: Parse Server Information JSON
       run: |
