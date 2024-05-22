@@ -41,6 +41,7 @@ jobs:
 
     steps:
       - name: Parse Server Information JSON
+        shell: bash
         run: |
           SERVERS_INFO_JSON='${{ secrets.SERVERS_INFO }}'
           SERVER_SELECTION=${{ inputs.serverSelection }}
@@ -49,11 +50,12 @@ jobs:
           HOST=$(echo $SERVER_INFO | jq -r '.host')
           USER=$(echo $SERVER_INFO | jq -r '.user')
           SSH_KEY=$(echo $SERVER_INFO | jq -r '.ssh_key')
-          ENCODED_SSH_KEY=$(echo "$SSH_KEY" | base64)
 
           echo "::add-mask::$HOST"
           echo "::add-mask::$USER"
           echo "::add-mask::$SSH_KEY"
+
+          ENCODED_SSH_KEY=$(echo "$SSH_KEY" | base64 | tr -d '\n')
           echo "::add-mask::$ENCODED_SSH_KEY"
 
           echo "SERVER_HOST=$HOST" >> $GITHUB_ENV
