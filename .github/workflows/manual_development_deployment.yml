@@ -14,10 +14,10 @@ on:
       DOCKER_IMAGE_TAG:
         description: 'Docker image tag'
         required: true
+
       serverSelection:
         description: 'Enter server number (e.g., 1 for SERVER1, 2 for SERVER2)'
         required: true
-        type: string
 
 jobs:
   # this job make sure restrict everyone can not run jobs that require this job.

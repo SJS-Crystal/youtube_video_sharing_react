@@ -1,0 +1,22 @@
+name: Deploy to Test Server(test template)
+
+on:
+  workflow_dispatch:
+    inputs:
+        DOCKER_IMAGE_TAG:
+            description: "Docker image tag"
+            required: true
+
+        serverSelection:
+            description: "Enter server number (e.g., 1 for SERVER1, 2 for SERVER2)"
+            required: true
+
+jobs:
+    call-deployment-workflow:
+        uses: ./.github/workflows/deploy-template.yml@main
+        secrets: inherit
+        with:
+            DOCKER_IMAGE_TAG: ${{ github.event.inputs.DOCKER_IMAGE_TAG }}
+            serverSelection: ${{ github.event.inputs.serverSelection }}
+            environmentName: test
+            approvalEnvironmentName: approval_test_environment
