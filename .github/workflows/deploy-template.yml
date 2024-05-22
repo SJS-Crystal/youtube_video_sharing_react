@@ -49,21 +49,24 @@ jobs:
           HOST=$(echo $SERVER_INFO | jq -r '.host')
           USER=$(echo $SERVER_INFO | jq -r '.user')
           SSH_KEY=$(echo $SERVER_INFO | jq -r '.ssh_key')
+          ENCODED_SSH_KEY=$(echo "$SSH_KEY" | base64)
 
-
+          echo "::add-mask::$HOST"
+          echo "::add-mask::$USER"
+          echo "::add-mask::$SSH_KEY"
+          echo "::add-mask::$ENCODED_SSH_KEY"
 
           echo "SERVER_HOST=$HOST" >> $GITHUB_ENV
           echo "SERVER_USER=$USER" >> $GITHUB_ENV
           echo "SERVER_SSH_KEY=$SSH_KEY" >> $GITHUB_ENV
+          echo "SERVER_SSH_KEY_BASE64=$ENCODED_SSH_KEY" >> $GITHUB_ENV
 
       - uses: actions/checkout@v2
 
       - name: Deploy to Server
 
         run: |
-
-          printf "-----BEGIN OPENSSH PRIVATE KEY-----\n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\nAwQFBg==\n-----END OPENSSH PRIVATE KEY-----" > server_ssh_file
-          echo server_ssh_file
+          echo "${{ env.SERVER_SSH_KEY_BASE64 }}" | base64 --decode > server_ssh_file
           chmod 400 server_ssh_file
           ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} 'mkdir -p /home/project/'
           scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/project/
