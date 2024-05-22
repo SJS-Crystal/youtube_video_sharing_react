@@ -6,7 +6,7 @@
 #   "2": {"host": "yyyy", "user": "yyy", "ssh_key": "yyy"}
 # }
 
-name: Manual deploy to specify testing server
+name: Deploy to Test server
 
 on:
   workflow_dispatch:
