@@ -65,15 +65,15 @@ jobs:
         run: |
 
           echo "${{ env.SERVER_SSH_KEY }}" > server_ssh_file
-          chmod 400 server_ssh_file
-          # ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} 'mkdir -p /home/project/'
-          # scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/project/
-          # ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} << 'EOF'
-          #   export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-          #   export DOCKER_IMAGE_TAG=${{ inputs.DOCKER_IMAGE_TAG }}
-          #   export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
-          #   echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          #   cd /home/project/
-          #   docker-compose -f docker-compose.server.yml down
-          #   docker-compose -f docker-compose.server.yml up -d
-          # EOF
+          chmod 777 server_ssh_file
+          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} 'mkdir -p /home/project/'
+          scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/project/
+          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} << 'EOF'
+            export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+            export DOCKER_IMAGE_TAG=${{ inputs.DOCKER_IMAGE_TAG }}
+            export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
+            echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+            cd /home/project/
+            docker-compose -f docker-compose.server.yml down
+            docker-compose -f docker-compose.server.yml up -d
+          EOF
