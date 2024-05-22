@@ -1,0 +1,79 @@
+name: Deployment Workflow Template
+
+on:
+  workflow_call:
+    inputs:
+      DOCKER_IMAGE_TAG:
+        description: 'Docker image tag'
+        required: true
+        type: string
+
+      serverSelection:
+        description: 'Enter server number (e.g., 1 for SERVER1, 2 for SERVER2)'
+        required: true
+        type: string
+
+      environmentName:
+        description: 'Enter the environment name'
+        required: true
+        type: string
+
+      approvalEnvironmentName:
+        description: 'Enter the approval environment name'
+        required: true
+        type: string
+
+jobs:
+  approval:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.approvalEnvironmentName }}
+
+    steps:
+      - name: Wait for approval
+        run: echo "Waiting for admin approval..."
+
+  manual_deploy:
+    needs: [approval]
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environmentName }}
+
+    steps:
+      - name: Parse Server Information JSON
+        run: |
+          SERVERS_INFO_JSON='${{ secrets.SERVERS_INFO }}'
+          SERVER_SELECTION=${{ inputs.serverSelection }}
+          SERVER_INFO=$(echo $SERVERS_INFO_JSON | jq --arg key "$SERVER_SELECTION" '.[$key]')
+
+          HOST=$(echo $SERVER_INFO | jq -r '.host')
+          USER=$(echo $SERVER_INFO | jq -r '.user')
+          SSH_KEY=$(echo $SERVER_INFO | jq -r '.ssh_key')
+
+          echo "::add-mask::$HOST"
+          echo "::add-mask::$USER"
+          echo "::add-mask::$SSH_KEY"
+
+          echo "SERVER_HOST=$HOST" >> $GITHUB_ENV
+          echo "SERVER_USER=$USER" >> $GITHUB_ENV
+          echo "SERVER_SSH_KEY=$SSH_KEY" >> $GITHUB_ENV
+
+      - uses: actions/checkout@v2
+
+      - name: Deploy to Server
+
+        run: |
+
+          echo "${{ env.SERVER_SSH_KEY }}" > server_ssh_file
+          chmod 400 server_ssh_file
+          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} 'mkdir -p /home/project/'
+          scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/project/
+          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} << 'EOF'
+            export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+            export DOCKER_IMAGE_TAG=${{ inputs.DOCKER_IMAGE_TAG }}
+            export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
+            echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+            cd /home/project/
+            docker-compose -f docker-compose.server.yml down
+            docker-compose -f docker-compose.server.yml up -d
+          EOF
