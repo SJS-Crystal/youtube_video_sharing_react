@@ -62,9 +62,8 @@ jobs:
 
         run: |
 
-          echo server_ssh_file
-          cat server_ssh_file
-          
+          echo "${{ env.SERVER_SSH_KEY }}"
+
           echo "${{ env.SERVER_SSH_KEY }}" > server_ssh_file
 
           chmod 600 server_ssh_file
