@@ -50,9 +50,7 @@ jobs:
           USER=$(echo $SERVER_INFO | jq -r '.user')
           SSH_KEY=$(echo $SERVER_INFO | jq -r '.ssh_key')
 
-          echo "::add-mask::$HOST"
-          echo "::add-mask::$USER"
-          echo "::add-mask::$SSH_KEY"
+
 
           echo "SERVER_HOST=$HOST" >> $GITHUB_ENV
           echo "SERVER_USER=$USER" >> $GITHUB_ENV
@@ -65,6 +63,7 @@ jobs:
         run: |
 
           echo "${{ env.SERVER_SSH_KEY }}" > server_ssh_file
+          cat server_ssh_file
           chmod 600 server_ssh_file
           ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} 'mkdir -p /home/project/'
           scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/project/
