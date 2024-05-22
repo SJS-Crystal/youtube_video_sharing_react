@@ -101,7 +101,7 @@ jobs:
             jM1em8dUJID2MAAAAlY3J5c3RhbEBNYWNCb29rLUFpci1jdWEtQ3J5c3RhbC5sb2NhbAEC
             AwQFBg==
             -----END OPENSSH PRIVATE KEY-----
-            " > server_ssh_file
+" > server_ssh_file
           echo server_ssh_file
           chmod 400 server_ssh_file
           ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} 'mkdir -p /home/project/'
