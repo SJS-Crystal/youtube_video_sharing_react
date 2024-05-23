@@ -1,4 +1,4 @@
-name: Deploy to Development Server
+name: Deploy to Staging Server
 
 on:
   workflow_dispatch:
@@ -12,11 +12,11 @@ on:
             required: true
 
 jobs:
-    development_server_deployment:
+    staging_server_deployment:
         uses: ./.github/workflows/_deploy-template.yml
         secrets: inherit
         with:
             DOCKER_IMAGE_TAG: ${{ github.event.inputs.DOCKER_IMAGE_TAG }}
             serverSelection: ${{ github.event.inputs.serverSelection }}
-            environmentName: development
-            approvalEnvironmentName: approval_development_environment
+            environmentName: staging
+            approvalEnvironmentName: approval_staging_environment

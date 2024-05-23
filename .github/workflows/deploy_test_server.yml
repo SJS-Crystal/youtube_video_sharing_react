@@ -8,7 +8,7 @@ on:
             required: true
 
         serverSelection:
-            description: "Enter server number (e.g., 1 for SERVER1, 2 for SERVER2)"
+            description: "Enter server number (e.g., 1 for SERVER 1, 2 for SERVER 2)"
             required: true
 
 jobs:
