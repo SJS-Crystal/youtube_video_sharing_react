@@ -40,35 +40,20 @@ jobs:
       name: ${{ inputs.environmentName }}
 
     steps:
-      - name: Set target server
+      - uses: actions/checkout@v2
+      - name: Deploy to Server
         shell: bash
         env:
           HOST_SECRET_NAME: ${{ format('SERVER_HOST_{0}', inputs.serverSelection) }}
           USER_SECRET_NAME: ${{ format('SERVER_USER_{0}', inputs.serverSelection) }}
           SSH_KEY_SECRET_NAME: ${{ format('SERVER_SSH_KEY_{0}', inputs.serverSelection) }}
-        run: |
-          HOST=${{ secrets[env.HOST_SECRET_NAME] }}
-          USER=${{ secrets[env.USER_SECRET_NAME] }}
-          SSH_KEY=${{ secrets[env.SSH_KEY_SECRET_NAME] }}
-
-          echo "::add-mask::$HOST"
-          echo "::add-mask::$USER"
-          echo "::add-mask::$SSH_KEY"
-
-          echo "SERVER_HOST=$HOST" >> $GITHUB_ENV
-          echo "SERVER_USER=$USER" >> $GITHUB_ENV
-          echo "SERVER_SSH_KEY=$SSH_KEY" >> $GITHUB_ENV
-
-      - uses: actions/checkout@v2
-
-      - name: Deploy to Server
 
         run: |
-          echo "${{ secrets.SERVER_SSH_KEY }}" > server_ssh_file
+          echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
           chmod 400 server_ssh_file
-          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} 'mkdir -p /home/project/'
-          scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/project/
-          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} << 'EOF'
+          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} 'mkdir -p /home/project/'
+          scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }}:/home/project/
+          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} << 'EOF'
             export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
             export DOCKER_IMAGE_TAG=${{ inputs.DOCKER_IMAGE_TAG }}
             export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
