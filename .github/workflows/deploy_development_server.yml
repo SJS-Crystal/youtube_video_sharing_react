@@ -13,7 +13,7 @@ on:
 
 jobs:
     development_server_deployment:
-        uses: ./.github/workflows/templates/deploy-template.yml
+        uses: ./.github/workflows/_deploy-template.yml
         secrets: inherit
         with:
             DOCKER_IMAGE_TAG: ${{ github.event.inputs.DOCKER_IMAGE_TAG }}
