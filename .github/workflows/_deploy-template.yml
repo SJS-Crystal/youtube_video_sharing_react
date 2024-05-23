@@ -10,7 +10,7 @@
 #   SERVER_SSH_KEY_2
 #   ...
 
-name: Deployment Workflow Template
+name: Deployment Template
 
 on:
   workflow_call:
