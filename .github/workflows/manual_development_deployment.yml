@@ -1,54 +1,5 @@
 # This file is used in case, there are multi QA server and want to choose which one to deploy
 
-# example SERVERS_INFO secret variable:
-# {
-#   "1": {"host": "xxxx", "user": "xxx", "ssh_key": "xxx"},
-#   "2": {"host": "yyyy", "user": "yyy", "ssh_key": "yyy"}
-# }
-
-# {
-#   "1": {"host": "165.232.169.205", "user": "root", "ssh_key": "-----BEGIN OPENSSH PRIVATE KEY-----
-# b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAABlwAAAAdzc2gtcn
-# NhAAAAAwEAAQAAAYEA69psZtAi67+CemaqLKGgzXxLTx6vkWpEEMZwhdkEvacjVbuhf+6C
-# ml9xD7ih/0nV7k4a/g+y5H1P3Te1kA8DR0jDUAE52V+PimMQ2qzCEdZMsDoFG580n9P10Z
-# 5lnCY5yhLrHjT7BmsV6Htvb24vChCbZVXb6f4whLa3vV2sGjiZE3ZeyrXXHMjNXG6lBhuO
-# M/KF4peGtiZvC/4NgoC8iSNgbrhLiEF80hFMvDMxRyYYk3GNNzxvfQ8Hgp/EsW73AJl7Pc
-# zTicm3LCMDwoygrh1Nd64NVP2YRU8V0ebTTF4Ms0qnbVVsOtVJTKX8TAS2VrRxAN/pY2rO
-# YBhwahJUm4cbB4cTm2OkN1AqvaRW0efzNJArqcSxkVWS6IOFbQ9hadwi1BcLHtFUm7p0Hb
-# rrtEviTsEUactBxZUZTrlaSdRp3qEaETFhKCQzpFVdOg2VleUKCWjYAeQHJMzhtwDVFDT9
-# o8TnKC+WzKJ+VFxUSIdaO4mjsXalepiEkRfOEEf7AAAFoANC954DQveeAAAAB3NzaC1yc2
-# EAAAGBAOvabGbQIuu/gnpmqiyhoM18S08er5FqRBDGcIXZBL2nI1W7oX/ugppfcQ+4of9J
-# 1e5OGv4PsuR9T903tZAPA0dIw1ABOdlfj4pjENqswhHWTLA6BRufNJ/T9dGeZZwmOcoS6x
-# 40+wZrFeh7b29uLwoQm2VV2+n+MIS2t71drBo4mRN2Xsq11xzIzVxupQYbjjPyheKXhrYm
-# bwv+DYKAvIkjYG64S4hBfNIRTLwzMUcmGJNxjTc8b30PB4KfxLFu9wCZez3M04nJtywjA8
-# KMoK4dTXeuDVT9mEVPFdHm00xeDLNKp21VbDrVSUyl/EwEtla0cQDf6WNqzmAYcGoSVJuH
-# GweHE5tjpDdQKr2kVtHn8zSQK6nEsZFVkuiDhW0PYWncItQXCx7RVJu6dB2667RL4k7BFG
-# nLQcWVGU65WknUad6hGhExYSgkM6RVXToNlZXlCglo2AHkByTM4bcA1RQ0/aPE5ygvlsyi
-# flRcVEiHWjuJo7F2pXqYhJEXzhBH+wAAAAMBAAEAAAGAXcX9fa9ZgxQkw5fYJ2Cn96tooe
-# +YbJ+sqmLL0Fvl56XxhZ/RaXUiVlCGOnL1bfQka9iAIO2K+g/c1h7VQI7HhesnRMMIBiZZ
-# gvM6e0de7gqfeR3IdCALo1R6EzsAOWJ1baOx+dOkzvt6vXF+b/aGG2FY96R4iIN5NPsU+O
-# Sqjc5dBoD01XIRMi+gfxS65j/EfWD63InUlM2ZL1J2eqHG1FvNdpgt5+Hpx/f644UTHa/G
-# 67ClLgYIade067msUcPFC/DFGh3WFuNpg9JcZqmpqPud9UEpetgYDjnpJuIGMr4bUnAc1n
-# Bu2JpKD/VCAOiRbiM+9GxcMzUNplES1kQu3OLYKdOWCRg2bIQR3V3sukGZi3M6A2/Nxquu
-# 1zkSdXxxQTf25PH9r6hP+goGnqA1u9gGR5ZMHUSPUU9KqDm5SN13zIiXP/vtmQU5aDRwql
-# onahwZwzg+6I/A3Jdr5ACmK3lGTRpFt/3gvJsPxmVJ9yInrToRwh6zYzt78q62srCRAAAA
-# wGSjbYWzZsvvJ8Wlj9afcy+nmYdeN9v8A7l/cAASz+BeO51nB1ypyjfxbqgLT7Brzqiagt
-# iSI7jfr+uNxEh0WKVOes3od3NXv6SLr53xRv3Q0iF2ps+qv8uFR9Qlcwc9FnG8voPdWbXZ
-# uIPQ2PSGSu3/jECZZWUqJt1QBs4ZEKSamk0m6K8DrfXeqRVFwV45p0D1JkV1vgDCXHxwQp
-# +XpS5jtIlyDWlwnCiCBUAgLAwB+V7BEZOODeltylMc8PNOpQAAAMEA/C9GVm2V7KTO2hTL
-# GojkBvp3TYvBrHlZY/QAfAjlFN78bMBFrQ10Vyd4b1aY3zVm0dI1+0Swf1c1FQYGU2cudv
-# rSAFgtaJm/utjxGZnTcpkhj0oxCWgGLLg5VTCFipCB1TDVbf9j1uawKQlkyziwR1c6uZkh
-# CGE+RrVk6IsMoIzbCv5zE6uQwoEocOX0ebl4CCcef9UyWfYMug/Phq418HCDfUG1dAhedA
-# M5bZRCN76GFibshg2XMd9/SmLje4SJAAAAwQDva+Vk8OiBgy44ah5bBz27blbeSWjyBMq4
-# gWBACO6cr9eXjNDNmcPoL+gqgkAzwK2uW0newbgBjEQhPc7nyQjBtJXZlvF4acr5bhMfvq
-# +Uzz0JuPOxjAqtZBE/YjEIJP2RnI3yiVFq0ElZyUVj/QbGZDtHp2D/ftECGGIaY9oyU1TD
-# YbGvBbSGbGKduq1FK0HVWTMJrgjldGT4qYPslieDlST1HlYe+GsV57jRUGm8fPR+p5EJ00
-# jM1em8dUJID2MAAAAlY3J5c3RhbEBNYWNCb29rLUFpci1jdWEtQ3J5c3RhbC5sb2NhbAEC
-# AwQFBg==
-# -----END OPENSSH PRIVATE KEY-----"},
-#   "2": {"host": "yyyy", "user": "yyy", "ssh_key": "yyy"}
-# }
-
 name: Deploy to Development server # use server credentials in development environment github
 
 on:

@@ -1,3 +1,13 @@
+# Should define following in github secret for every corresponding environment: 
+#   SERVER_HOST_1
+#   SERVER_USER_1
+#   SERVER_SSH_KEY_1
+
+#   SERVER_HOST_2
+#   SERVER_USER_2
+#   SERVER_SSH_KEY_2
+#   ...
+
 name: Deployment Workflow Template
 
 on:
@@ -33,7 +43,7 @@ jobs:
       - name: Wait for approval
         run: echo "Waiting for admin approval..."
 
-  manual_deploy:
+  deploy:
     needs: [approval]
     runs-on: ubuntu-latest
     environment:
