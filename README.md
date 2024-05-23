@@ -21,8 +21,8 @@ This is project for people can share any youtube videos. And other logged in use
 1. Create ssh key: run `ssh-keygen` and follow assist prompt, and you have a public key and private key.
 2. Copy SSH public key to server: `ssh-copy-id -i <path_to_publib_key> <username>@<host_ip>`.Example: `ssh-copy-id -i ~/.ssh/id_rsa.pub root@188.166.236.134`
 3. If this is first time you connect to this server, maybe you see a prompt like **Are you sure you want to continue connecting (yes/no)?**, let type `yes` > Enter
-4. `cat ~/.ssh/id_rsa` to get ssh private key and copy this and set **SERVER_SSH_KEY** secret on github. (*you can adjust ~/.ssh/id_rsa to your file you create above*)
-5. You also set <host ip> and <username> to **SERVER_HOST**, **SERVER_USER** secrets on github
+4. `cat ~/.ssh/id_rsa` to get ssh private key and copy this and set **SERVER_SSH_KEY_1** secret on github. (*you can adjust ~/.ssh/id_rsa to your file you create above*)
+5. You also set <host ip> and <username> to **SERVER_HOST_1**, **SERVER_USER_1** secrets on github
 
 #### Initialize Server
 1. SSH to server `ssh <username>@<host_ip>`
@@ -41,7 +41,7 @@ This is project for people can share any youtube videos. And other logged in use
 - Set your repository name to **DOCKER_IMAGE_NAME** secret on github
 - Access to your docker profile > Security > New Access Token, make sure select `Read & Write` permissions, now you have docker access token
 - Set your docker access token to **DOCKER_TOKEN** secret on github
-- Copy value in your .env and set to **ENV_FILE_V1** secret on github
+- Copy value in your .env and set to **ENV_FILE** secret on github
 
 
 ### Deploy

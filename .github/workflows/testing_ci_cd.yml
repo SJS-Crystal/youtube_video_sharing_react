@@ -37,7 +37,7 @@ jobs:
 
     - name: Create env file
       run: |
-        echo "${{ secrets.ENV_FILE_V1 }}" > .env
+        echo "${{ secrets.ENV_FILE }}" > .env
 
     - name: Log in to Docker Hub
       run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
@@ -64,25 +64,25 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Pre-flight check for SERVER_HOST
+    - name: Pre-flight check for server credentials
       id: prefight
       run: |
-        if [ -z "${{ secrets.SERVER_HOST }}" ]; then
-          echo "SERVER_HOST is not set. Skipping subsequent steps."
+        if [ -z "${{ secrets.SERVER_HOST_1 }}" ]; then
+          echo "SERVER_HOST_1 is not set. Skipping subsequent steps."
           echo "skip=true" >> $GITHUB_ENV
         else
-          echo "SERVER_HOST is set. Proceeding with deployment."
+          echo "SERVER_HOST_1 is set. Proceeding with deployment."
           echo "skip=false" >> $GITHUB_ENV
         fi
 
     - name: Deploy to Server
       if: env.skip != 'true'
       run: |
-        echo "${{ secrets.SERVER_SSH_KEY }}" > server_ssh_file
+        echo "${{ secrets.SERVER_SSH_KEY_1 }}" > server_ssh_file
         chmod 400 server_ssh_file
-        ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} 'mkdir -p /home/project/'
-        scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/home/project/
-        ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} << 'EOF'
+        ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER_1 }}@${{ secrets.SERVER_HOST_1 }} 'mkdir -p /home/project/'
+        scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ secrets.SERVER_USER_1 }}@${{ secrets.SERVER_HOST_1 }}:/home/project/
+        ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER_1 }}@${{ secrets.SERVER_HOST_1 }} << 'EOF'
           export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
           export DOCKER_IMAGE_TAG=${{ needs.docker_build.outputs.IMAGE_TAG }}
           export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
