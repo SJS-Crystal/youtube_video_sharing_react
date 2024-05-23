@@ -44,13 +44,12 @@ jobs:
         shell: bash
         env:
           HOST_SECRET_NAME: ${{ format('SERVER_HOST_{0}', inputs.serverSelection) }}
+          USER_SECRET_NAME: ${{ format('SERVER_USER_{0}', inputs.serverSelection) }}
+          SSH_KEY_SECRET_NAME: ${{ format('SERVER_SSH_KEY_{0}', inputs.serverSelection) }}
         run: |
-          SERVER_NUMBER=${{ inputs.serverSelection }}
-
           HOST=${{ secrets[env.HOST_SECRET_NAME] }}
-
-          USER=\${{ secrets["SERVER_USER_$SERVER_NUMBER"] }}
-          SSH_KEY=\${{ secrets['SERVER_SSH_KEY_$SERVER_NUMBER'] }}
+          USER=${{ secrets[env.USER_SECRET_NAME] }}
+          SSH_KEY=${{ secrets[env.SSH_KEY_SECRET_NAME] }}
 
           echo "::add-mask::$HOST"
           echo "::add-mask::$USER"
