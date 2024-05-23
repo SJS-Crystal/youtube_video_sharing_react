@@ -40,33 +40,30 @@ jobs:
       name: ${{ inputs.environmentName }}
 
     steps:
-      - name: Parse Server Information JSON
+      - name: Set target server
         shell: bash
         run: |
           SERVERS_INFO_JSON='${{ secrets.SERVERS_INFO }}'
-          SERVER_SELECTION=${{ inputs.serverSelection }}
-          SERVER_INFO=$(echo $SERVERS_INFO_JSON | jq --arg key "$SERVER_SELECTION" '.[$key]')
+          SERVER_NUMBER=${{ inputs.serverSelection }}
 
-          HOST=$(echo $SERVER_INFO | jq -r '.host')
-          USER=$(echo $SERVER_INFO | jq -r '.user')
-          SSH_KEY=$(echo $SERVER_INFO | jq -r '.ssh_key')
+          HOST=\${{ secrets['SERVER_HOST_' + SERVER_NUMBER] }}
+          USER=\${{ secrets['SERVER_USER_' + SERVER_NUMBER] }}
+          SSH_KEY=\${{ secrets['SERVER_SSH_KEY_' + SERVER_NUMBER] }}
 
-
-          ENCODED_SSH_KEY=$(echo "$SSH_KEY" | base64 | tr -d '\n')
-
+          echo "::add-mask::$HOST"
+          echo "::add-mask::$USER"
+          echo "::add-mask::$SSH_KEY"
 
           echo "SERVER_HOST=$HOST" >> $GITHUB_ENV
           echo "SERVER_USER=$USER" >> $GITHUB_ENV
           echo "SERVER_SSH_KEY=$SSH_KEY" >> $GITHUB_ENV
-          echo "SERVER_SSH_KEY_BASE64=$ENCODED_SSH_KEY" >> $GITHUB_ENV
 
       - uses: actions/checkout@v2
 
       - name: Deploy to Server
 
         run: |
-          echo "${{ env.SERVER_SSH_KEY_BASE64 }}" | base64 --decode > server_ssh_file
-          cat -v server_ssh_file
+          echo "${{ env.SERVER_SSH_KEY }}" > server_ssh_file
           chmod 400 server_ssh_file
           ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} 'mkdir -p /home/project/'
           scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/home/project/
