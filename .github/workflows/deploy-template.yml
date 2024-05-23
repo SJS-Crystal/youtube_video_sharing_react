@@ -43,10 +43,11 @@ jobs:
       - name: Set target server
         shell: bash
         run: |
-          SERVERS_INFO_JSON='${{ secrets.SERVERS_INFO }}'
           SERVER_NUMBER=${{ inputs.serverSelection }}
 
-          HOST=${{ secrets["SERVER_HOST_$SERVER_NUMBER"] }}
+          HOST_SECRET_NAME="SERVER_HOST_$SERVER_NUMBER"
+          HOST=$(echo ${{ secrets[$HOST_SECRET_NAME] }})
+
           USER=\${{ secrets["SERVER_USER_$SERVER_NUMBER"] }}
           SSH_KEY=\${{ secrets['SERVER_SSH_KEY_$SERVER_NUMBER'] }}
 
