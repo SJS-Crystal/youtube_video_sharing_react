@@ -42,11 +42,12 @@ jobs:
     steps:
       - name: Set target server
         shell: bash
+        env:
+          HOST_SECRET_NAME: ${{ format('SERVER_HOST_{0}', inputs.serverSelection) }}
         run: |
           SERVER_NUMBER=${{ inputs.serverSelection }}
 
-          HOST_SECRET_NAME="SERVER_HOST_$SERVER_NUMBER"
-          HOST=$(echo ${{ secrets[$HOST_SECRET_NAME] }})
+          HOST=${{ secrets[env.HOST_SECRET_NAME] }}
 
           USER=\${{ secrets["SERVER_USER_$SERVER_NUMBER"] }}
           SSH_KEY=\${{ secrets['SERVER_SSH_KEY_$SERVER_NUMBER'] }}
