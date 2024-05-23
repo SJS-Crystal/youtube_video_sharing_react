@@ -45,10 +45,13 @@ jobs:
         run: |
           SERVERS_INFO_JSON='${{ secrets.SERVERS_INFO }}'
           SERVER_NUMBER=${{ inputs.serverSelection }}
+          KEY_NAME="SERVER_HOST_$SERVER_NUMBER"
 
-          HOST=\${{ secrets['SERVER_HOST_' + SERVER_NUMBER] }}
-          USER=\${{ secrets['SERVER_USER_' + SERVER_NUMBER] }}
-          SSH_KEY=\${{ secrets['SERVER_SSH_KEY_' + SERVER_NUMBER] }}
+          HOST="${{ secrets[KEY_NAME] }}"
+
+          HOST=${{ secrets["SERVER_HOST_$SERVER_NUMBER"] }}
+          USER=\${{ secrets["SERVER_USER_$SERVER_NUMBER"] }}
+          SSH_KEY=\${{ secrets['SERVER_SSH_KEY_$SERVER_NUMBER'] }}
 
           echo "::add-mask::$HOST"
           echo "::add-mask::$USER"
