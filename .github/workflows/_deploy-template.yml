@@ -74,3 +74,8 @@ jobs:
             docker-compose -f docker-compose.server.yml down
             docker-compose -f docker-compose.server.yml up -d
           EOF
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: "./docs"

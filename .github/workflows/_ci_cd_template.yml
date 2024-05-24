@@ -1,21 +1,11 @@
-name: Testing CI CD
+name: CI/CD Template
 
 on:
-  pull_request:
-    branches:
-    - develop
-    - main
-
-  push:
-    branches:
-      - develop
-
-  workflow_dispatch:
+    workflow_call:
 
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Node.js
@@ -26,7 +16,6 @@ jobs:
       run: npm install
     - name: Run tests
       run: npm test
-
 
   docker_build:
     needs: test
@@ -55,7 +44,7 @@ jobs:
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
 
-  # This job auto deploy to default test server, in this case, SERVER_HOST, SERVER_USER, SERVER_SSH_KEY must be specified
+  # This job auto deploy to server 1, so SERVER_HOST_1, SERVER_USER_1, SERVER_SSH_KEY_1 must be specified
   # In case, there are many server and want to choose which one to deploy, we need use 'Manual Deployment' workflow
   deploy:
     needs: docker_build
