@@ -33,7 +33,7 @@ jobs:
   docker_build_development:
     if: >
       (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop') ||
-      (github.event_name == 'workflow_dispatch' && github.ref_name == 'ci_cd')
+      (github.event_name == 'workflow_dispatch' && github.ref_name != 'main' && github.ref_name != 'develop')
 
     needs: [test]
     runs-on: ubuntu-latest
