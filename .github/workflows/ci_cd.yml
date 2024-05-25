@@ -123,7 +123,7 @@ jobs:
 
   docker_build_staging:
     if: >
-      github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'master' && (
+      github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' && (
         startsWith(github.event.pull_request.head.ref, 'release') ||
         startsWith(github.event.pull_request.head.ref, 'hotfix')
       )
@@ -156,7 +156,7 @@ jobs:
 
   deploy_staging:
     if: >
-      github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'master' && (
+      github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' && (
         startsWith(github.event.pull_request.head.ref, 'release') ||
         startsWith(github.event.pull_request.head.ref, 'hotfix')
       )
