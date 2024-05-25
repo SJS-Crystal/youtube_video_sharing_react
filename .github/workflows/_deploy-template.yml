@@ -75,6 +75,13 @@ jobs:
             docker-compose -f docker-compose.server.yml up -d
           EOF
 
+  Upload_artifact:
+    needs: [Deploy]
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environmentName }}
+
+    steps:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
