@@ -82,6 +82,7 @@ jobs:
       name: ${{ inputs.environmentName }}
 
     steps:
+      - uses: actions/checkout@v2
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
