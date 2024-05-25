@@ -3,14 +3,6 @@ name: Deploy with options
 on:
   workflow_dispatch:
     inputs:
-        DOCKER_IMAGE_TAG:
-            description: "Docker image tag"
-            required: true
-
-        serverSelection:
-            description: "Enter server number (e.g., 1 for SERVER 1, 2 for SERVER 2)"
-            required: true
-
         environmentName:
             description: "Select the environment (ENVs and secrets from this environment will be apply during deployment)"
             required: true
@@ -20,6 +12,15 @@ on:
                 - test
                 - staging
                 - production
+
+        DOCKER_IMAGE_TAG:
+            description: "Docker image tag"
+            required: true
+
+        serverSelection:
+            description: "Enter server number (e.g., 1 for SERVER 1, 2 for SERVER 2)"
+            required: true
+
 
 jobs:
     Deployment:
