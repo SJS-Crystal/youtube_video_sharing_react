@@ -1,4 +1,4 @@
-name: CI/CD Template
+name: _ CI/CD Template
 
 on:
     workflow_call:
