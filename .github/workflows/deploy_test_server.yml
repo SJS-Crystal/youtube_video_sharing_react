@@ -1,4 +1,4 @@
-name: Deploy to Test Server
+name: Deploy with options
 
 on:
   workflow_dispatch:
@@ -22,7 +22,7 @@ on:
                 - production
 
 jobs:
-    deployment:
+    Deployment:
         uses: ./.github/workflows/_deploy-template.yml
         secrets: inherit
         with:
