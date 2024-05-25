@@ -11,12 +11,28 @@ on:
             description: "Enter server number (e.g., 1 for SERVER 1, 2 for SERVER 2)"
             required: true
 
+        environmentName:
+            description: "Select the environment (ENVs and secrets from this environment will be apply during deployment)"
+            required: true
+            type: choice
+            options:
+                - development
+                - test
+                - staging
+                - production
+
 jobs:
-    test_server_deployment:
-        uses: ./.github/workflows/_deploy-template.yml
-        secrets: inherit
-        with:
+    deployment:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Set approvalEnvironmentName
+          run: |
+            echo "approvalEnvironmentName=approval_${{ github.event.inputs.environmentName }}_environment" >> $GITHUB_ENV
+ 
+        - uses: ./.github/workflows/_deploy-template.yml
+          secrets: inherit
+          with:
             DOCKER_IMAGE_TAG: ${{ github.event.inputs.DOCKER_IMAGE_TAG }}
             serverSelection: ${{ github.event.inputs.serverSelection }}
-            environmentName: test
-            approvalEnvironmentName: approval_test_environment
+            environmentName: ${{ github.event.inputs.environmentName }}
+            approvalEnvironmentName: ${{ env.approvalEnvironmentName }}
