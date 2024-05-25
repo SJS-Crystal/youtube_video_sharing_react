@@ -30,7 +30,7 @@ jobs:
             echo "approvalEnvironmentName=approval_${{ github.event.inputs.environmentName }}_environment" >> $GITHUB_ENV
  
         - uses: ./.github/workflows/_deploy-template.yml
-          secrets: inherit
+
           with:
             DOCKER_IMAGE_TAG: ${{ github.event.inputs.DOCKER_IMAGE_TAG }}
             serverSelection: ${{ github.event.inputs.serverSelection }}
