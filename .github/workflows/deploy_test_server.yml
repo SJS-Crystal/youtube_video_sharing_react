@@ -23,16 +23,10 @@ on:
 
 jobs:
     deployment:
-        runs-on: ubuntu-latest
-        steps:
-        - name: Set approvalEnvironmentName
-          run: |
-            echo "approvalEnvironmentName=approval_${{ github.event.inputs.environmentName }}_environment" >> $GITHUB_ENV
- 
-        - uses: ./.github/workflows/_deploy-template.yml
-
-          with:
+        uses: ./.github/workflows/_deploy-template.yml
+        secrets: inherit
+        with:
             DOCKER_IMAGE_TAG: ${{ github.event.inputs.DOCKER_IMAGE_TAG }}
             serverSelection: ${{ github.event.inputs.serverSelection }}
             environmentName: ${{ github.event.inputs.environmentName }}
-            approvalEnvironmentName: ${{ env.approvalEnvironmentName }}
+            approvalEnvironmentName: approval_${{ github.event.inputs.environmentName }}_environment
