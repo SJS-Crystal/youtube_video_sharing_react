@@ -76,7 +76,6 @@ jobs:
           # EOF
 
   Upload_artifact:
-    needs: [Deploy]
     runs-on: ubuntu-latest
     environment:
       name: ${{ inputs.environmentName }}
@@ -86,4 +85,4 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: "./public/docs"
+          path: "./docs"
