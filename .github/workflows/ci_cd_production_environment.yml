@@ -1,4 +1,4 @@
-name: CI/CD on Production
+name: CI/CD Production
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 
 jobs:
-  test:
+  run_test_Production:
     if: startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
@@ -22,9 +22,9 @@ jobs:
       run: npm test
 
 
-  docker_build:
+  docker_build_Production:
     if: startsWith(github.ref, 'refs/tags/')
-    needs: [test]
+    needs: [run_test_Production]
     runs-on: ubuntu-latest
     environment:
       name: production
@@ -50,9 +50,9 @@ jobs:
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
 
-  deploy:
+  deploy_Production:
     if: startsWith(github.ref, 'refs/tags/')
-    needs: [docker_build]
+    needs: [docker_build_Production]
     runs-on: ubuntu-latest
 
     environment:
@@ -69,7 +69,7 @@ jobs:
         scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ secrets.SERVER_USER_1 }}@${{ secrets.SERVER_HOST_1 }}:/home/project/
         ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER_1 }}@${{ secrets.SERVER_HOST_1 }} << 'EOF'
           export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-          export DOCKER_IMAGE_TAG=${{ needs.docker_build.outputs.IMAGE_TAG }}
+          export DOCKER_IMAGE_TAG=${{ needs.docker_build_Production.outputs.IMAGE_TAG }}
           export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           cd /home/project/
