@@ -5,10 +5,9 @@ on:
     branches:
     - develop
     - main
+    types: [opened, synchronize, reopened]
 
   push:
-    branches:
-      - develop
     tags:
       - "v*.*.*"
 
@@ -248,3 +247,5 @@ jobs:
           echo DOCKER_IMAGE_TAG
           docker-compose -f docker-compose.server.yml up -d
         EOF
+
+

@@ -1,0 +1,91 @@
+name: CI/CD on Staging
+
+on:
+  pull_request:
+    branches:
+    - main
+    types: [opened, synchronize, reopened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14'
+    - name: Install dependencies
+      run: npm install
+    - name: Run tests
+      run: npm test
+
+
+  docker_build:
+    if: >
+      github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' && (
+        startsWith(github.event.pull_request.head.ref, 'release') ||
+        startsWith(github.event.pull_request.head.ref, 'hotfix')
+      )
+
+    needs: [test]
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+    outputs:
+      IMAGE_TAG: ${{ steps.build_image.outputs.IMAGE_TAG }}
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Create env file
+      run: |
+        echo "${{ secrets.ENV_FILE }}" > .env
+
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Build and push Docker image
+      id: build_image
+      run: |
+        IMAGE_TAG=${GITHUB_SHA::8}
+        echo "IMAGE_TAG=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
+        echo "Building image with tag ${IMAGE_TAG}"
+        docker build . -f Dockerfile.server -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
+        echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
+        docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
+
+  deploy:
+    if: >
+      github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' && (
+        startsWith(github.event.pull_request.head.ref, 'release') ||
+        startsWith(github.event.pull_request.head.ref, 'hotfix')
+      )
+
+    needs: [docker_build]
+    runs-on: ubuntu-latest
+
+    environment:
+      name: staging
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Deploy to Server
+      run: |
+        echo "${{ secrets.SERVER_SSH_KEY_1 }}" > server_ssh_file
+        chmod 400 server_ssh_file
+        ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER_1 }}@${{ secrets.SERVER_HOST_1 }} 'mkdir -p /home/project/'
+        scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ secrets.SERVER_USER_1 }}@${{ secrets.SERVER_HOST_1 }}:/home/project/
+        ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER_1 }}@${{ secrets.SERVER_HOST_1 }} << 'EOF'
+          export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+          export DOCKER_IMAGE_TAG=${{ needs.docker_build.outputs.IMAGE_TAG }}
+          export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
+          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          cd /home/project/
+          echo DOCKER_USERNAME
+          docker-compose -f docker-compose.server.yml down
+          echo DOCKER_IMAGE_TAG
+          docker-compose -f docker-compose.server.yml up -d
+        EOF
+
