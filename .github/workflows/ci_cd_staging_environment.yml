@@ -8,8 +8,13 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' && (
+        startsWith(github.event.pull_request.head.ref, 'release') ||
+        startsWith(github.event.pull_request.head.ref, 'hotfix')
+      )
 
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up Node.js
@@ -64,7 +69,6 @@ jobs:
 
     needs: [docker_build]
     runs-on: ubuntu-latest
-
     environment:
       name: staging
 

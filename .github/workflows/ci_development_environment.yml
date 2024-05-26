@@ -10,8 +10,8 @@ on:
 
 jobs:
   test:
+    if: (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop')
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Node.js
@@ -22,16 +22,10 @@ jobs:
       run: npm install
     - name: Run tests
       run: npm test
-    # - name: Determine job status
-    #   if: always()
-    #   run: |
-    #     job_status=$([[ ${{ steps.execute.outcome }} == 'success' ]] && echo "success" || echo "failure")
-    #     echo "::set-output name=job_status::$job_status"
+
 
   docker_build:
-    if: >
-      (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop')
-
+    if: (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop')
     needs: [test]
     runs-on: ubuntu-latest
     environment:
@@ -57,11 +51,6 @@ jobs:
         docker build . -f Dockerfile.server -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
-    # - name: Determine job status
-    #   if: always()
-    #   run: |
-    #     job_status=$([[ ${{ steps.execute.outcome }} == 'success' ]] && echo "success" || echo "failure")
-    #     echo "::set-output name=job_status::$job_status"
 
   merge_approval:
     runs-on: ubuntu-latest
@@ -70,23 +59,3 @@ jobs:
     steps:
       - name: Wait for merge approval 
         run: echo "Waiting for admin merge approval..."
-
-  # check_merge_permission:
-  #   runs-on: ubuntu-latest
-  #   needs: [test, docker_build, merge_approval]
-  #   if: always()
-  #   steps:
-  #     - name: Check all jobs status and decide the final state
-  #       run: |
-  #         test_status="${{ needs.test.outputs.job_status }}"
-  #         docker_build_status="${{ needs.docker_build.outputs.job_status }}"
-
-  #         echo "Docker build status: $docker_build_status"
-  #         echo "Test status: $test_status"
-
-  #         if [[ "$docker_build_status" != "success" || "$test_status" != "success" ]]; then
-  #           echo "One or more jobs didn't succeed."
-  #           exit 1
-  #         else
-  #           echo "All jobs succeeded."
-  #         fi

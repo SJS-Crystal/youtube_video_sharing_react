@@ -8,8 +8,8 @@ on:
 
 jobs:
   test:
+    if: (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop')
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up Node.js
@@ -22,9 +22,7 @@ jobs:
       run: npm test
 
   docker_build:
-    if: >
-      (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop')
-
+    if: (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop')
     needs: [test]
     runs-on: ubuntu-latest
     environment:
@@ -52,9 +50,7 @@ jobs:
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
 
   deploy:
-    if: >
-      (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop')
-
+    if: (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop')
     needs: [docker_build]
     runs-on: ubuntu-latest
     environment:
