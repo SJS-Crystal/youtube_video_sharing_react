@@ -1,4 +1,4 @@
-name: CI/CD on Test
+name: CI/CD Test
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
     types: [closed]
 
 jobs:
-  test:
+  run_test_Test:
     if: (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop')
     runs-on: ubuntu-latest
     steps:
@@ -21,9 +21,9 @@ jobs:
     - name: Run tests
       run: npm test
 
-  docker_build:
+  docker_build_Test:
     if: (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop')
-    needs: [test]
+    needs: [run_test_Test]
     runs-on: ubuntu-latest
     environment:
       name: test
@@ -49,9 +49,9 @@ jobs:
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
 
-  deploy:
+  deploy_Test:
     if: (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop')
-    needs: [docker_build]
+    needs: [docker_build_Test]
     runs-on: ubuntu-latest
     environment:
       name: test
@@ -66,7 +66,7 @@ jobs:
         scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ secrets.SERVER_USER_1 }}@${{ secrets.SERVER_HOST_1 }}:/home/project/
         ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER_1 }}@${{ secrets.SERVER_HOST_1 }} << 'EOF'
           export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-          export DOCKER_IMAGE_TAG=${{ needs.docker_build.outputs.IMAGE_TAG }}
+          export DOCKER_IMAGE_TAG=${{ needs.docker_build_Test.outputs.IMAGE_TAG }}
           export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           cd /home/project/

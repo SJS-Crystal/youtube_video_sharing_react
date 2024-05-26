@@ -30,4 +30,4 @@ jobs:
             DOCKER_IMAGE_TAG: ${{ github.event.inputs.DOCKER_IMAGE_TAG }}
             serverSelection: ${{ github.event.inputs.serverSelection }}
             environmentName: ${{ github.event.inputs.environmentName }}
-            approvalEnvironmentName: approval_${{ github.event.inputs.environmentName }}_environment
+            approvalEnvironmentName: approval_${{ github.event.inputs.environmentName }}_deloyment

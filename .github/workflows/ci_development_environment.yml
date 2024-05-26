@@ -1,4 +1,4 @@
-name: CI on Development
+name: CI Development
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
 
 
 jobs:
-  test:
+  test_Development:
     if: (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop')
     runs-on: ubuntu-latest
     steps:
@@ -24,9 +24,9 @@ jobs:
       run: npm test
 
 
-  docker_build:
+  docker_build_Development:
     if: (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop')
-    needs: [test]
+    needs: [test_Development]
     runs-on: ubuntu-latest
     environment:
       name: development
@@ -52,7 +52,7 @@ jobs:
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
 
-  merge_approval:
+  need_merge_develop_approval:
     runs-on: ubuntu-latest
     environment:
       name: approval_merge_develop_branch
