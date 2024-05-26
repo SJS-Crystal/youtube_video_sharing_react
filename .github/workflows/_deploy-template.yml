@@ -42,8 +42,8 @@ jobs:
       name: ${{ inputs.approvalEnvironmentName }}
 
     steps:
-      - name: Wait for approval
-        run: echo "Waiting for admin approval..."
+      - name: Wait for deploy approval
+        run: echo "Waiting for admin deploy approval..."
 
   Deploy:
     needs: [Approval]
