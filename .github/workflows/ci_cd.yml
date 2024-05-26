@@ -248,5 +248,3 @@ jobs:
           echo DOCKER_IMAGE_TAG
           docker-compose -f docker-compose.server.yml up -d
         EOF
-
-
