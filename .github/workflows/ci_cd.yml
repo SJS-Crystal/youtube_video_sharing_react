@@ -3,13 +3,14 @@ name: CI/CD
 on:
   pull_request:
     branches:
-    - develop
-    - main
-    types: [opened, synchronize, reopened]
+      - fdfdfdfdfdfdfdfd
+  #   - develop
+  #   - main
+  #   types: [opened, synchronize, reopened]
 
-  push:
-    tags:
-      - "v*.*.*"
+  # push:
+  #   tags:
+  #     - "v*.*.*"
 
 
 jobs:
