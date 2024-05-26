@@ -1,4 +1,4 @@
-name: CI development environment
+name: CI on Development
 
 on:
   pull_request:
@@ -23,7 +23,7 @@ jobs:
     - name: Run tests
       run: npm test
 
-  docker_build_development:
+  docker_build:
     if: >
       (github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop')
 

@@ -1,4 +1,4 @@
-name: CI/CD staging environment
+name: CI/CD on Staging
 
 on:
   pull_request:
@@ -22,7 +22,7 @@ jobs:
       run: npm test
 
 
-  docker_build_staging:
+  docker_build:
     if: >
       github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' && (
         startsWith(github.event.pull_request.head.ref, 'release') ||
@@ -55,14 +55,14 @@ jobs:
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
 
-  deploy_staging:
+  deploy:
     if: >
       github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'main' && (
         startsWith(github.event.pull_request.head.ref, 'release') ||
         startsWith(github.event.pull_request.head.ref, 'hotfix')
       )
 
-    needs: [docker_build_staging]
+    needs: [docker_build]
     runs-on: ubuntu-latest
 
     environment:

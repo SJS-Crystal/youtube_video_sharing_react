@@ -1,4 +1,4 @@
-name: CI/CD Test environment
+name: CI/CD on Test
 
 on:
   pull_request:
@@ -21,7 +21,7 @@ jobs:
     - name: Run tests
       run: npm test
 
-  docker_build_test:
+  docker_build:
     if: >
       (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop')
 
@@ -51,11 +51,11 @@ jobs:
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
 
-  deploy_test:
+  deploy:
     if: >
       (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop')
 
-    needs: [docker_build_test]
+    needs: [docker_build]
     runs-on: ubuntu-latest
     environment:
       name: test
@@ -79,4 +79,3 @@ jobs:
           echo DOCKER_IMAGE_TAG
           docker-compose -f docker-compose.server.yml up -d
         EOF
-
