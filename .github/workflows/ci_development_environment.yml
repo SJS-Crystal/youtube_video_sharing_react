@@ -55,6 +55,8 @@ jobs:
         echo "Building image with tag ${IMAGE_TAG}"
 
         DOMAIN_NAME = "${{ vars.DOMAIN_NAME_1 }}"
+        echo $DOMAIN_NAME
+        echo 00000
         envsubst '$DOMAIN_NAME' < domain.conf.template > default.conf
         echo 0000000
         cat default.conf
