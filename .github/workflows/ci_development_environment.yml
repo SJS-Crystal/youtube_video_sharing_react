@@ -54,9 +54,15 @@ jobs:
 
         echo "DOMAIN_NAME=${DOMAIN_NAME_1}" >> $GITHUB_ENV
         envsubst "$DOMAIN_NAME" < domain.conf.template > default.conf
+        echo 1111111
         cat Dockerfile.server
+        echo 22222222
+        
         envsubst "$DOMAIN_NAME" < Dockerfile.server > Dockerfile.server
+        echo 333333333
         cat Dockerfile.server
+        echo 444444444
+
         docker build . -f Dockerfile.server -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
