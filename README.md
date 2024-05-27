@@ -41,7 +41,7 @@ This is project for people can share any youtube videos. And other logged in use
   ```
 5. Schedule renew ssl certification
   - `crontab -e`
-  - if **Select an editor** prompt appear, let type `1` > Enter
+  - if **Select an editor** prompt appear, let type `1` > Enter (for select nano editor)
   - Add `0 2 * * 1 /usr/bin/certbot renew --quiet` > press Ctrl + X > type `Y` > Enter
 6. Adjust `server_name` to your domain, `ssl_certificate` (generated at step 4) and `ssl_certificate_key` (generated at step 4) in nginx file
 
