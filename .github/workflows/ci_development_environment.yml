@@ -64,7 +64,6 @@ jobs:
       name: approval_merge_develop_branch
     steps:
       - name: Wait for merge approval 
-        run: echo "Waiting for admin merge approval..."
+        run: echo "Waiting for admin merge approval... "
 
 
-        
