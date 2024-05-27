@@ -47,12 +47,13 @@ jobs:
 
     - name: Build and push Docker image
       id: build_image
+      env:
+        DOMAIN_NAME: ${{env.DOMAIN_NAME_1}}
       run: |
         IMAGE_TAG=${GITHUB_SHA::8}
         echo "IMAGE_TAG=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
         echo "Building image with tag ${IMAGE_TAG}"
 
-        DOMAIN_NAME="${{env.DOMAIN_NAME_1}}"
         envsubst '$DOMAIN_NAME' < domain.conf.template > default.conf
         echo 0000000
         cat default.conf
