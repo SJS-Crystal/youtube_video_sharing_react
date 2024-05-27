@@ -52,7 +52,7 @@ jobs:
         echo "IMAGE_TAG=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
         echo "Building image with tag ${IMAGE_TAG}"
 
-        echo "DOMAIN_NAME=${DOMAIN_NAME_1}" >> $GITHUB_ENV
+        echo "DOMAIN_NAME=${{env.DOMAIN_NAME_1}}" >> $GITHUB_ENV
         envsubst '$DOMAIN_NAME' < domain.conf.template > default.conf
         echo 0000000
         cat default.conf
