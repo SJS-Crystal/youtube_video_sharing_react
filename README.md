@@ -43,7 +43,7 @@ This is project for people can share any youtube videos. And other logged in use
   - `crontab -e`
   - if **Select an editor** prompt appear, let type `1` > Enter (for select nano editor)
   - Add `0 2 * * 1 /usr/bin/certbot renew --quiet` > press Ctrl + X > type `Y` > Enter
-6. Adjust `server_name` to your domain, `ssl_certificate` (generated at step 4) and `ssl_certificate_key` (generated at step 4) in nginx file
+6. In nginx.conf file, adjust `server_name` to your domain, `ssl_certificate` (generated at step 4) and `ssl_certificate_key` (generated at step 4)
 
   Example:
   ```
@@ -51,6 +51,9 @@ This is project for people can share any youtube videos. And other logged in use
     ssl_certificate /etc/letsencrypt/live/abc.us/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/abc.us/privkey.pem;
   ```
+
+7. Adjust Dockerfile.server file
+
 
 #### Create Docker hub
 - Login https://hub.docker.com/ and create a new repository
