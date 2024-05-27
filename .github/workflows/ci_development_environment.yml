@@ -42,9 +42,6 @@ jobs:
     - name: Log in to Docker Hub
       run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-    - name: Install gettext(envsubst)
-      run: sudo apt-get update && sudo apt-get install -y gettext-base
-
     - name: Build and push Docker image
       id: build_image
       env:
