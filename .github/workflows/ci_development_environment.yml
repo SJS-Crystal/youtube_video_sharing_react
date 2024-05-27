@@ -54,10 +54,12 @@ jobs:
 
         echo "DOMAIN_NAME=${DOMAIN_NAME_1}" >> $GITHUB_ENV
         envsubst "$DOMAIN_NAME" < domain.conf.template > default.conf
+        echo 0000000
+        cat default.conf
         echo 1111111
         cat Dockerfile.server
         echo 22222222
-        
+
         envsubst "$DOMAIN_NAME" < Dockerfile.server > Dockerfile.server
         echo 333333333
         cat Dockerfile.server
