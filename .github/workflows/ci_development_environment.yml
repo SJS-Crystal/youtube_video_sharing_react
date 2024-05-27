@@ -42,12 +42,18 @@ jobs:
     - name: Log in to Docker Hub
       run: echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
+    - name: Install gettext(envsubst)
+      run: sudo apt-get update && sudo apt-get install -y gettext-base
+
     - name: Build and push Docker image
       id: build_image
       run: |
         IMAGE_TAG=${GITHUB_SHA::8}
         echo "IMAGE_TAG=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
         echo "Building image with tag ${IMAGE_TAG}"
+
+        envsubst "$DOMAIN_NAME_1" < domain.conf.template > default.conf
+        envsubst "$DOMAIN_NAME_1" < Dockerfile.server > Dockerfile.server
         docker build . -f Dockerfile.server -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
