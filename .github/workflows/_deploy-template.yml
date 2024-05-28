@@ -70,32 +70,32 @@ jobs:
             (crontab -l 2>/dev/null; echo "0 2 * * 1 /usr/bin/certbot renew --quiet") | crontab -
           EOF
 
-  Deploy:
-    # needs: [Install_dependencies]
-    runs-on: ubuntu-latest
-    environment:
-      name: ${{ inputs.environmentName }}
+  # Deploy:
+  #   # needs: [Install_dependencies]
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: ${{ inputs.environmentName }}
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Deploy to Server
-        shell: bash
-        env:
-          HOST_SECRET_NAME: ${{ format('SERVER_HOST_{0}', inputs.serverSelection) }}
-          USER_SECRET_NAME: ${{ format('SERVER_USER_{0}', inputs.serverSelection) }}
-          SSH_KEY_SECRET_NAME: ${{ format('SERVER_SSH_KEY_{0}', inputs.serverSelection) }}
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Deploy to Server
+  #       shell: bash
+  #       env:
+  #         HOST_SECRET_NAME: ${{ format('SERVER_HOST_{0}', inputs.serverSelection) }}
+  #         USER_SECRET_NAME: ${{ format('SERVER_USER_{0}', inputs.serverSelection) }}
+  #         SSH_KEY_SECRET_NAME: ${{ format('SERVER_SSH_KEY_{0}', inputs.serverSelection) }}
 
-        run: |
-          echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
-          chmod 400 server_ssh_file
-          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} 'mkdir -p /home/project/'
-          scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }}:/home/project/
-          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} << 'EOF'
-            export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-            export DOCKER_IMAGE_TAG=${{ inputs.DOCKER_IMAGE_TAG }}
-            export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
-            echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-            cd /home/project/
-            docker-compose -f docker-compose.server.yml down
-            docker-compose -f docker-compose.server.yml up -d
-          EOF
+  #       run: |
+  #         echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
+  #         chmod 400 server_ssh_file
+  #         ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} 'mkdir -p /home/project/'
+  #         scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }}:/home/project/
+  #         ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} << 'EOF'
+  #           export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+  #           export DOCKER_IMAGE_TAG=${{ inputs.DOCKER_IMAGE_TAG }}
+  #           export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
+  #           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+  #           cd /home/project/
+  #           docker-compose -f docker-compose.server.yml down
+  #           docker-compose -f docker-compose.server.yml up -d
+  #         EOF
