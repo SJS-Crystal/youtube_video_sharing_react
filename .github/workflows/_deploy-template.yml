@@ -44,31 +44,31 @@ jobs:
     steps:
       - name: Wait for deploy approval
         run: echo "Waiting for admin deploy approval..."
-      
-  # Install_dependencies:
-  #   needs: [Approval]
-  #   runs-on: ubuntu-latest
-  #   environment:
-  #     name: ${{ inputs.environmentName }}
-  #   steps:
-  #     - name: Install dependencies
-  #       shell: bash
-  #       env:
-  #         HOST_SECRET_NAME: ${{ format('SERVER_HOST_{0}', inputs.serverSelection) }}
-  #         USER_SECRET_NAME: ${{ format('SERVER_USER_{0}', inputs.serverSelection) }}
-  #         SSH_KEY_SECRET_NAME: ${{ format('SERVER_SSH_KEY_{0}', inputs.serverSelection) }}
-  #         DOMAIN_ENV_NAME: ${{ format('DOMAIN_NAME_{0}', inputs.serverSelection) }}
 
-  #       run: |
-  #         echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
-  #         chmod 400 server_ssh_file
-  #         ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} << 'EOF'
-  #           sudo apt update
-  #           sudo apt install -y docker-compose
-  #           sudo apt install -y certbot
-  #           sudo certbot certonly --standalone --agree-tos --email $EMAIL -d ${{ vars[env.DOMAIN_ENV_NAME] }} --no-eff-email -n
-  #           (crontab -l 2>/dev/null; echo "0 2 * * 1 /usr/bin/certbot renew --quiet") | crontab -
-  #         EOF
+  Install_dependencies:
+    needs: [Approval]
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environmentName }}
+    steps:
+      - name: Install dependencies
+        shell: bash
+        env:
+          HOST_SECRET_NAME: ${{ format('SERVER_HOST_{0}', inputs.serverSelection) }}
+          USER_SECRET_NAME: ${{ format('SERVER_USER_{0}', inputs.serverSelection) }}
+          SSH_KEY_SECRET_NAME: ${{ format('SERVER_SSH_KEY_{0}', inputs.serverSelection) }}
+          DOMAIN_ENV_NAME: ${{ format('DOMAIN_NAME_{0}', inputs.serverSelection) }}
+
+        run: |
+          echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
+          chmod 400 server_ssh_file
+          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} << 'EOF'
+            sudo apt update
+            sudo apt install -y docker-compose
+            sudo apt install -y certbot
+            sudo certbot certonly --standalone --agree-tos --email jfksdf@gmail.com -d ${{ vars[env.DOMAIN_ENV_NAME] }} --no-eff-email -n
+            (crontab -l 2>/dev/null; echo "0 2 * * 1 /usr/bin/certbot renew --quiet") | crontab -
+          EOF
 
   Deploy:
     # needs: [Install_dependencies]
