@@ -62,11 +62,11 @@ jobs:
         run: |
           echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
           chmod 400 server_ssh_file
-          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} '[ -f /etc/setup_done ] && exit 1 || exit 0'
+          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} '[ -f /etc/setup_done ] && exit 99 || exit 0'
         continue-on-error: true
 
       - name: Install dependencies
-        if: steps.setup-check.outcome == 'failure'
+        if: steps.setup-check.outcome == 'success'
         shell: bash
         env:
           DOMAIN_ENV_NAME: ${{ format('DOMAIN_NAME_{0}', inputs.serverSelection) }}
