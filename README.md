@@ -26,23 +26,6 @@ This is project for people can share any youtube videos. And other logged in use
 6. Set **DOMAIN_NAME_1** environment variables on every github environment
 
 
-#### Initialize Server
-1. SSH to server `ssh <username>@<host_ip>`
-2. Install docker-compose on server `apt install -y docker-compose`
-3. Install certbot `apt install -y certbot`
-4. Generate ssh key `certbot certonly --standalone --agree-tos --email yourmail@gmail.com -d <your_domain.com> --no-eff-email -n`
-
-  For exmaple: 
-  ```shell
-  certbot certonly --standalone --agree-tos --email jonh@gmail.com -d abc.us --no-eff-email -n
-  ```
-
-5. Schedule renew ssl certification
-  - `crontab -e`
-  - if **Select an editor** prompt appear, let type `1` > Enter (for select nano editor)
-  - Add `0 2 * * 1 /usr/bin/certbot renew --quiet` > press Ctrl + X > type `Y` > Enter
-
-
 #### Create Docker hub
 - Login https://hub.docker.com/ and create a new repository
 - Set your docker username to **DOCKER_USERNAME** secret on github
