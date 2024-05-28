@@ -60,6 +60,8 @@ jobs:
         id: setup-check
         shell: bash
         run: |
+          echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
+          chmod 400 server_ssh_file
           ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} '[ -f /etc/setup_done ] && exit 1 || exit 0'
         continue-on-error: true
 
@@ -69,8 +71,6 @@ jobs:
         env:
           DOMAIN_ENV_NAME: ${{ format('DOMAIN_NAME_{0}', inputs.serverSelection) }}
         run: |
-          echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
-          chmod 400 server_ssh_file
           ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} << 'EOF'
             sudo apt update
             sudo apt install -y docker-compose
