@@ -99,7 +99,7 @@ function Header({
           </>
         ) : (
           <>
-            <input className='input' type="email" placeholder="Email123" value={email} onChange={e => setEmail(e.target.value)} />
+            <input className='input' type="email" placeholder="Email1231111" value={email} onChange={e => setEmail(e.target.value)} />
             <input className='input' type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
             <button className='btn btn-login' onClick={handleLogin}>Login</button>/
             <button className='btn btn-login' onClick={handleRegister}>Register</button>
@@ -109,6 +109,5 @@ function Header({
     </header>
   );
 }
-
 
 export default Header;
