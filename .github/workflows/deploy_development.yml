@@ -71,8 +71,9 @@ jobs:
         DOMAIN_KEY_NAME: ${{ format('DOMAIN_NAME_{0}', env.SERVER_NUMBER) }}
 
       run: |
-        IMAGE_TAG=${GITHUB_SHA::7}
-        echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+        TEMP_MERGE_COMMIT=$(git rev-parse HEAD)
+        IMAGE_TAG=$($TEMP_MERGE_COMMIT | cut -c 1-7)
+        echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_OUTPUT
         echo "Building image with tag ${IMAGE_TAG}"
         export DOMAIN_NAME=${{ vars[env.DOMAIN_KEY_NAME] }}
         envsubst '$DOMAIN_NAME' < domain.conf.template > default.conf
