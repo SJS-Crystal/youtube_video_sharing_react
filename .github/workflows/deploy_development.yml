@@ -48,8 +48,6 @@ jobs:
       run: |
         echo "SERVER_NUMBER=$(echo ${{ github.event.comment.body }} | grep -o -E 's[0-9]+' | cut -c2-)" >> $GITHUB_ENV
         echo "SERVER_NUMBER=$(echo ${{ github.event.comment.body }} | grep -o -E 's[0-9]+' | cut -c2-)" >> $GITHUB_OUTPUT
-        echo "DOMAIN_KEY_NAME=${{ format('DOMAIN_NAME_{0}', env.SERVER_NUMBER) }}" >> $GITHUB_ENV
-        echo "DOMAIN_NAME=${{ vars[env.DOMAIN_KEY_NAME] }}" >> $GITHUB_ENV
 
     - name: Create env file
       run: echo "${{ secrets.ENV_FILE }}" > .env
@@ -59,11 +57,11 @@ jobs:
 
     - name: Build and push Docker image
       id: build_image
-      # env:
-      #   DOMAIN_KEY_NAME: ${{ format('DOMAIN_NAME_{0}', env.SERVER_NUMBER) }}
+      env:
+        DOMAIN_KEY_NAME: ${{ format('DOMAIN_NAME_{0}', env.SERVER_NUMBER) }}
 
       run: |
-        # export DOMAIN_NAME=${{ vars[env.DOMAIN_KEY_NAME] }}
+        export DOMAIN_NAME=${{ vars[env.DOMAIN_KEY_NAME] }}
 
         echo 111111111111
         echo $DOMAIN_NAME
