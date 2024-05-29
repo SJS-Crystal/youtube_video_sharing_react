@@ -60,6 +60,10 @@ jobs:
         id: setup-check
         shell: bash
         run: |
+          if [ -z "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" ]; then
+              echo "::ERROR: ${{ env.SSH_KEY_SECRET_NAME }} SERCRET IS EMPTY! PLEASE SET THIS SERCRET"
+              exit 1
+          fi
           echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
           chmod 400 server_ssh_file
           ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} '[ -f /etc/setup_done ] && exit 99 || exit 0'
