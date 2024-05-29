@@ -87,6 +87,7 @@ jobs:
     environment:
       name: development
     steps:
+    - uses: actions/checkout@v2
     - name: Set secret name to get secret value of target server
       env:
         SERVER_NUMBER: ${{ needs.docker_build_Development.outputs.SERVER_NUMBER }}
