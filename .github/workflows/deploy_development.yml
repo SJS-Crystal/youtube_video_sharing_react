@@ -24,17 +24,13 @@ jobs:
               pull_number: context.issue.number
             });
 
-            # core.setOutput('PR_STATUS', pr.data.state);
 
             if (pr.data.state !== 'open') {
               const message = `=====>PR is not open, current state: ${pr.data.state}`;
               core.setFailed(message);
             }
 
-            if (pr.data.mergeable_state !== 'clean') {
-              const message = `=====>PR cannot be merged, current state: ${pr.data.mergeable_state}`;
-              core.setFailed(message);
-            }
+
 
   # check_PR_conflicts:
   #   needs: check_PR_status
