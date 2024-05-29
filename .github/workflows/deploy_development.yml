@@ -22,17 +22,17 @@ jobs:
             });
 
             if (pr.data.base.ref !== 'develop') {
-              const message = `=====> This workflow only runs for PRs based on the 'develop' branch, current base branch: ${pr.data.base.ref}`;
+              const message = `=====> This workflow only runs for PRs based on the 'develop' branch. Current base branch: ${pr.data.base.ref}`;
               core.setFailed(message);
             }
 
             if (pr.data.state !== 'open') {
-              const message = `=====> PR is not open, current state: ${pr.data.state}`;
+              const message = `=====> PR is not open. Current PR state: ${pr.data.state}`;
               core.setFailed(message);
             }
 
-            if (pr.data.mergeable_state !== 'clean') {
-              const message = `=====> PR cannot be merged, current state: ${pr.data.mergeable_state}`;
+            if (pr.data.mergeable_state == 'dirty') {
+              const message = `=====> PR cannot be merged. Please resolve conflicts`;
               core.setFailed(message);
             }
 
