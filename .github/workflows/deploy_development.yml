@@ -6,7 +6,7 @@ on:
       - created
 
 jobs:
-  check-pr-status:
+  check_PR_status:
     if: github.event.issue.pull_request && startsWith(github.event.comment.body, '/build_and_deploy_s')
     runs-on: ubuntu-latest
     outputs:
@@ -27,11 +27,11 @@ jobs:
 
 
   docker_build_Development:
-    needs: check-pr-status
+    needs: check_PR_status
     if: >
       github.event.issue.pull_request &&
       startsWith(github.event.comment.body, '/build_and_deploy_s') &&
-      needs.check-pr-status.outputs.PR_STATUS == 'open'
+      needs.check_PR_status.outputs.PR_STATUS == 'open'
     runs-on: ubuntu-latest
     environment:
       name: development
