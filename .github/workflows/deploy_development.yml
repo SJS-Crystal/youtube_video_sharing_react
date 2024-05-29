@@ -6,17 +6,14 @@ on:
       - created
 
 jobs:
-
-
-  
   check_PR_status:
     if: github.event.issue.pull_request && startsWith(github.event.comment.body, '/build_and_deploy_s')
     runs-on: ubuntu-latest
-    outputs:
-      PR_STATUS: ${{ steps.pr_status.outputs.PR_STATUS }}
+    # outputs:
+    #   PR_STATUS: ${{ steps.pr_status.outputs.PR_STATUS }}
     steps:
       - name: Check if PR is open
-        id: pr_status
+        # id: pr_status
         uses: actions/github-script@v6
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -26,15 +23,46 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.issue.number
             });
-            core.setOutput('PR_STATUS', pr.data.state);
 
+            # core.setOutput('PR_STATUS', pr.data.state);
+
+            if (pr.data.state !== 'open') {
+              const message = `=====>PR is not open, current state: ${pr.data.state}`;
+              core.setFailed(message);
+            }
+
+            if (pr.data.mergeable_state !== 'clean') {
+              const message = `=====>PR cannot be merged, current state: ${pr.data.mergeable_state}`;
+              core.setFailed(message);
+            }
+
+  # check_PR_conflicts:
+  #   needs: check_PR_status
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - name: Check out the repository
+  #     uses: actions/checkout@v2
+  #   - name: Get PR details
+  #     id: pr_details
+  #     uses: octokit/request-action@v2.x
+  #     with:
+  #       route: GET /repos/${{ github.repository }}/pulls/${{ github.event.issue.number }}
+  #       mediaType: '{"previews": ["merge-info"]}'
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #   - name: Check if PR is mergeable
+  #     run: |
+  #       mergeable_state=$(echo '${{ steps.pr_details.outputs.data }}' | jq -r .mergeable_state)
+  #       if [[ "$mergeable_state" == "dirty" ]]; then
+  #         echo "========> PR is conflicted. Please resolve conflicts."
+  #         exit 1
+  #       fi
 
   docker_build_Development:
     needs: check_PR_status
     if: >
       github.event.issue.pull_request &&
-      startsWith(github.event.comment.body, '/build_and_deploy_s') &&
-      needs.check_PR_status.outputs.PR_STATUS == 'open'
+      startsWith(github.event.comment.body, '/build_and_deploy_s')
     runs-on: ubuntu-latest
     environment:
       name: development
