@@ -61,7 +61,7 @@ jobs:
         shell: bash
         run: |
           if [ -z "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" ]; then
-              echo "::ERROR: ${{ env.SSH_KEY_SECRET_NAME }} SERCRET IS EMPTY! PLEASE SET THIS SERCRET"
+              echo "::ERROR: '${{ env.SSH_KEY_SECRET_NAME }}' SERCRET IS EMPTY! PLEASE SET THIS SERCRET"
               exit 1
           fi
           echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file

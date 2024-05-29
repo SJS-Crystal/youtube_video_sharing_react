@@ -80,7 +80,7 @@ jobs:
       run: |
         export DOMAIN_NAME=${{ vars[env.DOMAIN_KEY_NAME] }}
         if [ -z "$DOMAIN_NAME" ]; then
-            echo "::ERROR: ${{ env.DOMAIN_KEY_NAME }} SERCRET IS EMPTY! PLEASE SET THIS SERCRET"
+            echo "::ERROR: '${{ env.DOMAIN_KEY_NAME }}' ENV VARIABLE IS EMPTY! PLEASE SET THIS SERCRET"
             exit 1
         fi
         envsubst '$DOMAIN_NAME' < domain.conf.template > default.conf
