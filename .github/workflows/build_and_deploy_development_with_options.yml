@@ -31,8 +31,8 @@ jobs:
           DOMAIN_KEY_NAME: ${{ format('DOMAIN_NAME_{0}', inputs.serverSelection) }}
           DOMAIN_NAME: ${{ env[env.DOMAIN_KEY_NAME] }}
         run: |
-          IMAGE_TAG=${GITHUB_SHA::8}
-          echo "IMAGE_TAG=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
+          IMAGE_TAG=${GITHUB_SHA::7}
+          echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
             echo "Building image with tag ${IMAGE_TAG}"
             envsubst '$DOMAIN_NAME' < domain.conf.template > default.conf
             envsubst '$DOMAIN_NAME' < Dockerfile.template > Dockerfile.server
