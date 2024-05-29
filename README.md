@@ -26,37 +26,6 @@ This is project for people can share any youtube videos. And other logged in use
 6. Set **DOMAIN_NAME_1** environment variables on every github environment
 
 
-#### Initialize Server
-1. SSH to server `ssh <username>@<host_ip>`
-2. Install docker-compose on server `apt install -y docker-compose`
-3. Install certbot `apt install -y certbot`
-4. Generate ssh key `certbot certonly --standalone --agree-tos --email yourmail@gmail.com -d <your_domain.com> --no-eff-email -n`. Then you will receive 2 certificate keys with positive path, we use them below.
-
-  For exmaple: 
-  ```shell
-  certbot certonly --standalone --agree-tos --email jonh@gmail.com -d abc.us --no-eff-email -n
-  ```
-  and you will receive ssl_certificate path and ssl_certificate_key path:
-  ```
-  Certificate is saved at: /etc/letsencrypt/live/abc.us/fullchain.pem
-  Key is saved at:         /etc/letsencrypt/live/abc.us/privkey.pem
-  ```
-5. Schedule renew ssl certification
-  - `crontab -e`
-  - if **Select an editor** prompt appear, let type `1` > Enter (for select nano editor)
-  - Add `0 2 * * 1 /usr/bin/certbot renew --quiet` > press Ctrl + X > type `Y` > Enter
-6. In nginx.conf file, adjust `server_name` to your domain, `ssl_certificate` (generated at step 4) and `ssl_certificate_key` (generated at step 4)
-
-  Example:
-  ```
-    server_name abc.us;
-    ssl_certificate /etc/letsencrypt/live/abc.us/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/abc.us/privkey.pem;
-  ```
-
-7. Adjust Dockerfile.server file
-
-
 #### Create Docker hub
 - Login https://hub.docker.com/ and create a new repository
 - Set your docker username to **DOCKER_USERNAME** secret on github

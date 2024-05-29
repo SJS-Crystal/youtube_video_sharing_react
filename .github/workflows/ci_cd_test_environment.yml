@@ -41,10 +41,14 @@ jobs:
 
     - name: Build and push Docker image
       id: build_image
+      env:
+        DOMAIN_NAME: ${{ vars.DOMAIN_NAME_1 }}
       run: |
         IMAGE_TAG=${GITHUB_SHA::8}
         echo "IMAGE_TAG=${GITHUB_SHA::8}" >> $GITHUB_OUTPUT
         echo "Building image with tag ${IMAGE_TAG}"
+        envsubst '$DOMAIN_NAME' < domain.conf.template > default.conf
+        envsubst '$DOMAIN_NAME' < Dockerfile.template > Dockerfile.server
         docker build . -f Dockerfile.server -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
@@ -70,8 +74,7 @@ jobs:
           export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           cd /home/project/
-          echo DOCKER_USERNAME
+          docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
           docker-compose -f docker-compose.server.yml down
-          echo DOCKER_IMAGE_TAG
           docker-compose -f docker-compose.server.yml up -d
         EOF
