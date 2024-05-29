@@ -21,8 +21,8 @@ jobs:
               pull_number: context.issue.number
             });
 
-            if (pr.data.base !== 'develop') {
-              const message = `=====> This workflow only runs for PRs based on the 'develop' branch, current base branch: ${pr.data.base}`;
+            if (pr.data.base.ref !== 'develop') {
+              const message = `=====> This workflow only runs for PRs based on the 'develop' branch, current base branch: ${pr.data.base.ref}`;
               core.setFailed(message);
             }
 
