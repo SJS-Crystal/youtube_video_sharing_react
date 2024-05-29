@@ -6,7 +6,7 @@ on:
       - created
 
 jobs:
-  check-pr-status:
+  check_PR_status:
     if: github.event.issue.pull_request && startsWith(github.event.comment.body, '/build_and_deploy_s')
     runs-on: ubuntu-latest
     outputs:
@@ -26,14 +26,12 @@ jobs:
             core.setOutput('PR_STATUS', pr.data.state);
 
 
-
-
   docker_build_Development:
-    needs: check-pr-status
+    needs: check_PR_status
     if: >
       github.event.issue.pull_request &&
       startsWith(github.event.comment.body, '/build_and_deploy_s') &&
-      needs.check-pr-status.outputs.PR_STATUS == 'open'
+      needs.check_PR_status.outputs.PR_STATUS == 'open'
     runs-on: ubuntu-latest
     environment:
       name: development
@@ -49,12 +47,6 @@ jobs:
         echo "SERVER_NUMBER=$(echo ${{ github.event.comment.body }} | grep -o -E 's[0-9]+' | cut -c2-)" >> $GITHUB_ENV
         echo "SERVER_NUMBER=$(echo ${{ github.event.comment.body }} | grep -o -E 's[0-9]+' | cut -c2-)" >> $GITHUB_OUTPUT
 
-
-
-
-
-        
-
     - name: Create env file
       run: echo "${{ secrets.ENV_FILE }}" > .env
 
@@ -65,11 +57,12 @@ jobs:
       id: build_image
       env:
         DOMAIN_KEY_NAME: ${{ format('DOMAIN_NAME_{0}', env.SERVER_NUMBER) }}
-        DOMAIN_NAME: ${{ vars[env.DOMAIN_KEY_NAME] }}
+
       run: |
         IMAGE_TAG=${GITHUB_SHA}
         echo "IMAGE_TAG=${GITHUB_SHA}" >> $GITHUB_OUTPUT
         echo "Building image with tag ${IMAGE_TAG}"
+        export DOMAIN_NAME=${{ vars[env.DOMAIN_KEY_NAME] }}
         envsubst '$DOMAIN_NAME' < domain.conf.template > default.conf
         envsubst '$DOMAIN_NAME' < Dockerfile.template > Dockerfile.server
         docker build . -f Dockerfile.server -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
@@ -84,13 +77,15 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Deploy to Server
+    - name: Set secret name to get secret value of target server
       env:
         SERVER_NUMBER: ${{ needs.docker_build_Development.outputs.SERVER_NUMBER }}
-        HOST_SECRET_NAME: ${{ format('SERVER_HOST_{0}', env.SERVER_NUMBER ) }}
-        USER_SECRET_NAME: ${{ format('SERVER_USER_{0}', env.SERVER_NUMBER ) }}
-        SSH_KEY_SECRET_NAME: ${{ format('SERVER_SSH_KEY_{0}', env.SERVER_NUMBER ) }}
+      run: |
+        echo "HOST_SECRET_NAME=SERVER_HOST_${{ env.SERVER_NUMBER }}" >> $GITHUB_ENV
+        echo "USER_SECRET_NAME=SERVER_USER_${{ env.SERVER_NUMBER }}" >> $GITHUB_ENV
+        echo "SSH_KEY_SECRET_NAME=SERVER_SSH_KEY_${{ env.SERVER_NUMBER }}" >> $GITHUB_ENV
 
+    - name: Deploy to Server
       run: |
         echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
         chmod 400 server_ssh_file
@@ -98,7 +93,6 @@ jobs:
         scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }}:/home/project/
         ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} << 'EOF'
           export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-          export DOCKER_IMAGE_TAG=${{ inputs.DOCKER_IMAGE_TAG }}
           export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
           export DOCKER_IMAGE_TAG=${{ needs.docker_build_Development.outputs.IMAGE_TAG }}
           echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
