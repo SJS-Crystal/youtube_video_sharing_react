@@ -6,7 +6,7 @@ on:
       - created
 
 jobs:
-  check_PR_status:
+  Check_PR_status:
     if: github.event.issue.pull_request && startsWith(github.event.comment.body, '/build_and_deploy_s')
     runs-on: ubuntu-latest
     steps:
@@ -36,9 +36,8 @@ jobs:
               core.setFailed(message);
             }
 
-
-  docker_build_Development:
-    needs: check_PR_status
+  Docker_build_Development:
+    needs: Check_PR_status
     if: >
       github.event.issue.pull_request &&
       startsWith(github.event.comment.body, '/build_and_deploy_s')
@@ -82,34 +81,11 @@ jobs:
         echo "Pushing image ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}"
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
 
-  deploy_Development:
-    needs: [docker_build_Development]
-    runs-on: ubuntu-latest
-    environment:
-      name: development
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set secret name to get secret value of target server
-      env:
-        SERVER_NUMBER: ${{ needs.docker_build_Development.outputs.SERVER_NUMBER }}
-      run: |
-        echo "HOST_SECRET_NAME=SERVER_HOST_${{ env.SERVER_NUMBER }}" >> $GITHUB_ENV
-        echo "USER_SECRET_NAME=SERVER_USER_${{ env.SERVER_NUMBER }}" >> $GITHUB_ENV
-        echo "SSH_KEY_SECRET_NAME=SERVER_SSH_KEY_${{ env.SERVER_NUMBER }}" >> $GITHUB_ENV
-
-    - name: Deploy to Server
-      run: |
-        echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
-        chmod 400 server_ssh_file
-        ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} 'mkdir -p /home/project/'
-        scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }}:/home/project/
-        ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} << 'EOF'
-          export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-          export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
-          export DOCKER_IMAGE_TAG=${{ needs.docker_build_Development.outputs.IMAGE_TAG }}
-          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          cd /home/project/
-          docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
-          docker-compose -f docker-compose.server.yml down
-          docker-compose -f docker-compose.server.yml up -d
-        EOF
+  Deployment:
+    uses: ./.github/workflows/_deploy-template.yml
+    secrets: inherit
+    with:
+      DOCKER_IMAGE_TAG: ${{ needs.Docker_build_Development.outputs.IMAGE_TAG }}
+      serverSelection: ${{ needs.Docker_build_Development.outputs.SERVER_NUMBER }}
+      environmentName: development
+      approvalEnvironmentName: approval_development_deloyment
