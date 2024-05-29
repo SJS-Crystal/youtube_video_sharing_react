@@ -48,12 +48,8 @@ jobs:
       run: |
         echo "SERVER_NUMBER=$(echo ${{ github.event.comment.body }} | grep -o -E 's[0-9]+' | cut -c2-)" >> $GITHUB_ENV
         echo "SERVER_NUMBER=$(echo ${{ github.event.comment.body }} | grep -o -E 's[0-9]+' | cut -c2-)" >> $GITHUB_OUTPUT
-
-
-
-
-
-
+        echo "DOMAIN_KEY_NAME=${{ format('DOMAIN_NAME_{0}', env.SERVER_NUMBER) }}" >> $GITHUB_ENV
+        echo "DOMAIN_NAME=${{ vars[env.DOMAIN_KEY_NAME] }}" >> $GITHUB_ENV
 
     - name: Create env file
       run: echo "${{ secrets.ENV_FILE }}" > .env
@@ -63,11 +59,12 @@ jobs:
 
     - name: Build and push Docker image
       id: build_image
-      env:
-        DOMAIN_KEY_NAME: ${{ format('DOMAIN_NAME_{0}', env.SERVER_NUMBER) }}
+      # env:
+      #   DOMAIN_KEY_NAME: ${{ format('DOMAIN_NAME_{0}', env.SERVER_NUMBER) }}
 
       run: |
-        echo "DOMAIN_NAME=${{ vars[env.DOMAIN_KEY_NAME] }}" >> $GITHUB_ENV
+        # export DOMAIN_NAME=${{ vars[env.DOMAIN_KEY_NAME] }}
+
         echo 111111111111
         echo $DOMAIN_NAME
 
@@ -100,6 +97,8 @@ jobs:
         echo "USER_SECRET_NAME=SERVER_USER_${{ env.SERVER_NUMBER }}" >> $GITHUB_ENV
         echo "SSH_KEY_SECRET_NAME=SERVER_SSH_KEY_${{ env.SERVER_NUMBER }}" >> $GITHUB_ENV
 
+        echo ${{ env.SSH_KEY_SECRET_NAME }}
+        echo '------------'
         echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
         chmod 400 server_ssh_file
         ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} 'mkdir -p /home/project/'
