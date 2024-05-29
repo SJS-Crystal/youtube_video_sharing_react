@@ -82,6 +82,7 @@ jobs:
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
 
   Deployment:
+    needs: Docker_build_Development
     uses: ./.github/workflows/_deploy-template.yml
     secrets: inherit
     with:
