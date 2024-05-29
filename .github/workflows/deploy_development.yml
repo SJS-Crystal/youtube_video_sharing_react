@@ -83,7 +83,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Deploy to Server
+    - name: Set env to deploy server
       env:
         SERVER_NUMBER: ${{ needs.docker_build_Development.outputs.SERVER_NUMBER }}
         # HOST_SECRET_NAME: ${{ format('SERVER_HOST_{0}', env.SERVER_NUMBER ) }}
@@ -95,8 +95,8 @@ jobs:
         echo "USER_SECRET_NAME=SERVER_USER_${{ env.SERVER_NUMBER }}" >> $GITHUB_ENV
         echo "SSH_KEY_SECRET_NAME=SERVER_SSH_KEY_${{ env.SERVER_NUMBER }}" >> $GITHUB_ENV
 
-        echo ${{ env.SSH_KEY_SECRET_NAME }}
-        echo '------------'
+    - name: Deploy to Server
+      run: |
         echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
         chmod 400 server_ssh_file
         ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} 'mkdir -p /home/project/'
