@@ -36,3 +36,7 @@ This is project for people can share any youtube videos. And other logged in use
 
 
 ### Deploy
+#### Development
+- Create PR to `develop` branch and comment `/build_and_deploy_s<SERVER NUMBER>`.
+
+Example: comment `/build_and_deploy_s1` for deploy to server 1, `/build_and_deploy_s2` for deploy to server 2 ...
