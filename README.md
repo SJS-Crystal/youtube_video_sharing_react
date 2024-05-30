@@ -13,8 +13,31 @@ This is project for people can share any youtube videos. And other logged in use
 ## Deployment
 
 ### Prerequirement:
-- Make sure you have server with ubuntu 22.04 and domain
-- Perform point your domain to ip of your server
+- Make sure you have server with ubuntu 22.04(or later) and domain
+- Point your domain to server ip
+- In repo, **Settings > Environments**, create 4 environments in repo for contain env variables, secrets: `production`, `development`, `test`, `staging`
+- Create 4 environments to restrict deploying: `approval_production_deloyment`, `approval_staging_deloyment`, `approval_test_deloyment`, `approval_development_deloyment`
+- Create 2 environments to restrict merging PR into `develop` and `main` branch: `approval_merge_main_branch`, `approval_merge_develop_branch`
+- Restrict people can approve deploying and approval merging by config environments: `approval_production_deloyment`, `approval_staging_deloyment`, `approval_test_deloyment`, `approval_development_deloyment`, `approval_merge_main_branch`, `approval_merge_develop_branch`
+        ![alt text](image-2.png)
+- In **Settings > Branchs**, create theses 4 rules for make sure github workflow work in correct flow
+![alt text](image-6.png)
+
+- `main` rule
+![alt text](image-4.png)
+
+- `release*` rule
+![alt text](image-5.png)
+
+- `develop` rule 
+![alt text](image-7.png)
+
+
+- In repo, **Settings > Tags**, create new rule with pattern `*` to protect all tag, only admin can create new tag for release production
+![alt text](image-8.png)
+
+
+
 
 ### Preparing
 #### Config server credentials
@@ -34,9 +57,23 @@ This is project for people can share any youtube videos. And other logged in use
 - Set your docker access token to **DOCKER_TOKEN** secret on github
 - Copy value in your .env and set to **ENV_FILE** secret on github
 
+    ENV in every environment: `production`, `development`, `test`, `staging` should look like this
+    ![alt text](image-1.png)
+
+    In `development` environment, can use many servers for deploying many feature branchs. It looks like this:
+    ![alt text](image.png)
+
+- Branch protection rules
+
+
+
 
 ### Deploy
 #### Development
-- Create PR to `develop` branch and comment `/build_and_deploy_s<SERVER NUMBER>`.
+- Create PR to `develop` branch and comment this command in Conversation tab of PR `/build_and_deploy_s<SERVER NUMBER>`.
 
-Example: comment `/build_and_deploy_s1` for deploy to server 1, `/build_and_deploy_s2` for deploy to server 2 ...
+Example: Comment `/build_and_deploy_s1` for deploy to server 1, `/build_and_deploy_s2` for deploy to server 2 ...
+
+#### Production
+- Create new tag with form `v*.*.*` and publish release. CD Workflow will be triggered to build and deploy to production 
+![alt text](image-9.png)
