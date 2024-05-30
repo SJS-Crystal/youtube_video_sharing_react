@@ -58,6 +58,7 @@ function Timeline() {
 
   return (
     <div className='timeline'>
+      Hello bro!!
       {videos.map((video, index) => renderVideo(video, index))}
     </div>
   );
