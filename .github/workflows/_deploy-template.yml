@@ -78,7 +78,7 @@ jobs:
         run: |
           ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} << 'EOF'
             sudo apt update
-            sudo apt install -y docker-compose
+            sudo apt install -y docker-compose-v2
             sudo apt install -y certbot
             sudo certbot certonly --standalone --agree-tos --email ${{env.EMAIL}} -d ${{ vars[env.DOMAIN_ENV_NAME] }} --no-eff-email -n
             (crontab -l 2>/dev/null; echo "0 2 * * 1 /usr/bin/certbot renew --quiet") | crontab -
