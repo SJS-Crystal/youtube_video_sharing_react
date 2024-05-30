@@ -92,3 +92,6 @@ Example: Comment `/build_and_deploy_s1` for deploy to server 1, `/build_and_depl
 - Create new tag with form `v*.*.*` and target branch or commit need release and click `Publish release` button. CD Workflow will be triggered to build and deploy to production 
 
 ![alt text](image-9.png)
+
+
+![alt text](doc_images/image-10.png)
