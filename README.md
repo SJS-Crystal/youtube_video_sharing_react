@@ -19,21 +19,32 @@ This is project for people can share any youtube videos. And other logged in use
 - Create 4 environments to restrict deploying: `approval_production_deloyment`, `approval_staging_deloyment`, `approval_test_deloyment`, `approval_development_deloyment`
 - Create 2 environments to restrict merging PR into `develop` and `main` branch: `approval_merge_main_branch`, `approval_merge_develop_branch`
 - Restrict people can approve deploying and approval merging by config environments: `approval_production_deloyment`, `approval_staging_deloyment`, `approval_test_deloyment`, `approval_development_deloyment`, `approval_merge_main_branch`, `approval_merge_develop_branch`
-        ![alt text](image-2.png)
+  
+![alt text](image-2.png)
+
+
+
 - In **Settings > Branchs**, create theses 4 rules for make sure github workflow work in correct flow
 ![alt text](image-6.png)
 
 - `main` rule
+  
 ![alt text](image-4.png)
 
+
 - `release*` rule
+  
 ![alt text](image-5.png)
 
-- `develop` rule 
+
+- `develop` rule
+  
 ![alt text](image-7.png)
 
 
+
 - In repo, **Settings > Tags**, create new rule with pattern `*` to protect all tag, only admin can create new tag for release production
+
 ![alt text](image-8.png)
 
 
@@ -58,12 +69,15 @@ This is project for people can share any youtube videos. And other logged in use
 - Copy value in your .env and set to **ENV_FILE** secret on github
 
     ENV in every environment: `production`, `development`, `test`, `staging` should look like this
-    ![alt text](image-1.png)
+
+  ![alt text](image-1.png)
+
 
     In `development` environment, can use many servers for deploying many feature branchs. It looks like this:
-    ![alt text](image.png)
 
-- Branch protection rules
+  ![alt text](image.png)
+
+
 
 
 
@@ -76,4 +90,5 @@ Example: Comment `/build_and_deploy_s1` for deploy to server 1, `/build_and_depl
 
 #### Production
 - Create new tag with form `v*.*.*` and target branch or commit need release and click `Publish release` button. CD Workflow will be triggered to build and deploy to production 
+
 ![alt text](image-9.png)
