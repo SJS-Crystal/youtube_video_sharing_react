@@ -60,27 +60,10 @@ jobs:
   deploy_Production:
     if: startsWith(github.ref, 'refs/tags/')
     needs: [docker_build_Production]
-    runs-on: ubuntu-latest
-
-    environment:
-      name: production
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Deploy to Server
-      run: |
-        echo "${{ secrets.SERVER_SSH_KEY_1 }}" > server_ssh_file
-        chmod 400 server_ssh_file
-        ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER_1 }}@${{ secrets.SERVER_HOST_1 }} 'mkdir -p /home/project/'
-        scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ secrets.SERVER_USER_1 }}@${{ secrets.SERVER_HOST_1 }}:/home/project/
-        ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER_1 }}@${{ secrets.SERVER_HOST_1 }} << 'EOF'
-          export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
-          export DOCKER_IMAGE_TAG=${{ needs.docker_build_Production.outputs.IMAGE_TAG }}
-          export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
-          echo "${{ secrets.DOCKER_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-          cd /home/project/
-          docker pull $DOCKER_USERNAME/$DOCKER_IMAGE_NAME:$DOCKER_IMAGE_TAG
-          docker-compose -f docker-compose.server.yml down
-          docker-compose -f docker-compose.server.yml up -d
-        EOF
+    uses: ./.github/workflows/_deploy-template.yml
+    secrets: inherit
+    with:
+      DOCKER_IMAGE_TAG: ${{ needs.docker_build_Production.outputs.IMAGE_TAG }}
+      serverSelection: '1'
+      environmentName: production
+      approvalEnvironmentName: approval_production_deloyment
