@@ -84,9 +84,8 @@ jobs:
             exit 1
         fi
         envsubst '$DOMAIN_NAME' < domain.conf.template > default.conf
-        envsubst '$DOMAIN_NAME' < Dockerfile.template > Dockerfile.server
-        TEMP_MERGE_COMMIT=$(git rev-parse HEAD)
-        IMAGE_TAG=$(echo $TEMP_MERGE_COMMIT | cut -c 1-7)
+        envsubst '$DOMAIN_NAME' < Dockerfile.template > Dockerfile.serverZ
+        IMAGE_TAG=$(openssl rand -hex 4)
         echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_OUTPUT
         echo "Building image with tag ${IMAGE_TAG}"
         docker build . -f Dockerfile.server -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_IMAGE_NAME }}:${IMAGE_TAG}
