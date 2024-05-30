@@ -27,6 +27,7 @@ function App() {
       <ErrorMessage message={errorMessage} />
       <Notification isLoggedIn={isLoggedIn}/>
       <Routes>
+        Hello bro!!
         <Route path="/" element={<Timeline/>} />
         <Route path="/share" element={<ShareVideo setErrorMessage={setErrorMessage} />} />
         <Route path="*" element={<Navigate to="/" replace />} />
