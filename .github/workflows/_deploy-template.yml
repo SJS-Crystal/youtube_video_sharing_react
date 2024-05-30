@@ -1,15 +1,3 @@
-# There are multi server and want to choose which one to deploy, use this workflow
-
-# Must define following secrets in Github Secrets for every corresponding environment: 
-#   SERVER_HOST_1
-#   SERVER_USER_1
-#   SERVER_SSH_KEY_1
-
-#   SERVER_HOST_2
-#   SERVER_USER_2
-#   SERVER_SSH_KEY_2
-#   ...
-
 name: _ Deployment Template
 
 on:

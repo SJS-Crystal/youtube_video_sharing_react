@@ -1,3 +1,6 @@
+# This workflow allow deploy with many options.
+# can specify which branch, which version, and which environment to deploy
+
 name: Deploy with options
 
 on:
