@@ -75,5 +75,5 @@ This is project for people can share any youtube videos. And other logged in use
 Example: Comment `/build_and_deploy_s1` for deploy to server 1, `/build_and_deploy_s2` for deploy to server 2 ...
 
 #### Production
-- Create new tag with form `v*.*.*` and publish release. CD Workflow will be triggered to build and deploy to production 
+- Create new tag with form `v*.*.*` and target branch or commit need release and click `Publish release` button. CD Workflow will be triggered to build and deploy to production 
 ![alt text](image-9.png)
