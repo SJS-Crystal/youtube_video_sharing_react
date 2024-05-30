@@ -19,7 +19,7 @@ This is project for people can share any youtube videos. And other logged in use
 - Create 4 environments to restrict deploying: `approval_production_deloyment`, `approval_staging_deloyment`, `approval_test_deloyment`, `approval_development_deloyment`
 - Create 2 environments to restrict merging PR into `develop` and `main` branch: `approval_merge_main_branch`, `approval_merge_develop_branch`
 - Restrict people can approve deploying and approval merging by config environments: `approval_production_deloyment`, `approval_staging_deloyment`, `approval_test_deloyment`, `approval_development_deloyment`, `approval_merge_main_branch`, `approval_merge_develop_branch`
-  
+
 ![alt text](image-2.png)
 
 
@@ -28,17 +28,17 @@ This is project for people can share any youtube videos. And other logged in use
 ![alt text](image-6.png)
 
 - `main` rule
-  
+
 ![alt text](image-4.png)
 
 
 - `release*` rule
-  
+
 ![alt text](image-5.png)
 
 
 - `develop` rule
-  
+
 ![alt text](image-7.png)
 
 
