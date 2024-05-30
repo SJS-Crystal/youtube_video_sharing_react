@@ -84,7 +84,7 @@ jobs:
             exit 1
         fi
         envsubst '$DOMAIN_NAME' < domain.conf.template > default.conf
-        envsubst '$DOMAIN_NAME' < Dockerfile.template > Dockerfile.serverZ
+        envsubst '$DOMAIN_NAME' < Dockerfile.template > Dockerfile.server
         IMAGE_TAG=$(openssl rand -hex 4)
         echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_OUTPUT
         echo "Building image with tag ${IMAGE_TAG}"
