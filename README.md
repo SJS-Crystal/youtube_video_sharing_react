@@ -24,17 +24,20 @@ This is project for people can share any youtube videos. And other logged in use
 
 
 
-- In **Settings > Branchs**, create theses 4 rules for make sure github workflow work in correct flow
+- In **Settings > Branchs**, create theses 3 rules to make sure github workflow work in correct flow
 ![alt text](doc_images/image-6.png)
+
 
 - `main` rule
 
 ![alt text](doc_images/image-4.png)
 
 
+
 - `release*` rule
 
 ![alt text](doc_images/image-5.png)
+
 
 
 - `develop` rule
@@ -53,11 +56,14 @@ This is project for people can share any youtube videos. And other logged in use
 ### Preparing
 #### Config server credentials
 1. Create ssh key: run `ssh-keygen` and follow assist prompt, and you have a public key and private key.
-2. Copy SSH public key to server: `ssh-copy-id -i <path_to_publib_key> <username>@<host_ip>`.Example: `ssh-copy-id -i ~/.ssh/id_rsa.pub root@188.166.236.134`
-3. If this is first time you connect to this server, maybe you see a prompt like **Are you sure you want to continue connecting (yes/no)?**, let type `yes` > Enter
-4. `cat ~/.ssh/id_rsa` to get ssh private key and copy this and set **SERVER_SSH_KEY_1** secret on github. (*you can adjust ~/.ssh/id_rsa to your file you create above*)
-5. Set **SERVER_HOST_1**, **SERVER_USER_1** environment secrets on every github environment
-6. Set **DOMAIN_NAME_1** environment variables on every github environment
+2. Copy SSH public key to server: `ssh-copy-id -i <path_to_publib_key> <username>@<host_ip>`.
+
+   Example:
+   > `ssh-copy-id -i ~/.ssh/id_rsa.pub root@188.166.236.134`
+4. If this is first time you connect to this server, maybe you see a prompt like **Are you sure you want to continue connecting (yes/no)?**, let type `yes` > Enter
+5. `cat ~/.ssh/id_rsa` to get ssh private key and copy this and set **SERVER_SSH_KEY_1** secret on github. (*you can adjust ~/.ssh/id_rsa to your file you create above*)
+6. Set **SERVER_HOST_1**, **SERVER_USER_1** environment secrets on every github environment
+7. Set **DOMAIN_NAME_1** environment variables on every github environment
 
 
 #### Create Docker hub
@@ -85,8 +91,12 @@ This is project for people can share any youtube videos. And other logged in use
 ### Deploy
 #### Development
 - Create PR to `develop` branch and comment this command in Conversation tab of PR `/build_and_deploy_s<SERVER NUMBER>`.
-
-Example: Comment `/build_and_deploy_s1` for deploy to server 1, `/build_and_deploy_s2` for deploy to server 2 ...
+    Example:
+  > Comment `/build_and_deploy_s1` for to to server 1
+  
+  > Comment `/build_and_deploy_s2` for deploy to server 2
+  
+  > ...
 
 #### Production
 - Create new tag with form `v*.*.*` and target branch or commit need release and click `Publish release` button. CD Workflow will be triggered to build and deploy to production 
