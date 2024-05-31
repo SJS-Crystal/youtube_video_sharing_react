@@ -62,11 +62,11 @@ This is project for people can share any youtube videos. And other logged in use
 
 #### Create Docker hub
 - Login https://hub.docker.com/ and create a new repository
-- Set your docker username to **DOCKER_USERNAME** secret on github
-- Set your repository name to **DOCKER_IMAGE_NAME** secret on github
+- In every github environment, set your **DOCKER_USERNAME** to your docker username
+- In every github environment, set your **DOCKER_USERNAME** to your docker repository name
 - Access to your docker profile > Security > New Access Token, make sure select `Read & Write` permissions, now you have docker access token
-- Set your docker access token to **DOCKER_TOKEN** secret on github
-- Copy value in your .env and set to **ENV_FILE** secret on github
+- In every github environment, set your **DOCKER_TOKEN** to your docker access token
+- In every github environment, set **ENV_FILE** secret to content in .env file corresponding
 
     ENV in every environment: `production`, `development`, `test`, `staging` should look like this
 
