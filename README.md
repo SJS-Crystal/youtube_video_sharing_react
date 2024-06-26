@@ -114,3 +114,13 @@ This is project for people can share any youtube videos. And other logged in use
 
 ![alt text](doc_images/image-9.png)
 
+
+### Restore
+In case need restore to previous version in specify environment, let use `Deploy with options` workflow in `Actions tab > Deploy with options`
+- Leave Branch as default
+- Select environment need restore
+- Select target docker image tag
+- Click `Run workflow`
+
+For example, following will restore production environment to image with version 1.0.1
+![alt text](doc_images/image-10.png)
