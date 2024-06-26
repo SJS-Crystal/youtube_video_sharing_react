@@ -98,8 +98,19 @@ This is project for people can share any youtube videos. And other logged in use
   
   > ...
 
+#### Test
+- After PR (merge into develop) is ready for merging, let merge that PR. CD Workflow will be triggered to build and deploy to test environment. 
+
+#### Staging
+- Create release or hotfix branch
+   - Release branch: From `develop` branch, cherry pick commits(that need release) into new release branch starting with `release` like `release-1.0`, `release-1.1` ...
+   - Hotfix branch: From `main` branch, check out to new branch starting with `hotfix` like `hotfix-description_xxx`...
+- Create PR merge into `main` branch from release or hotfix branch
+- CD Workflow will be triggered to build and deploy to staging environment
+
 #### Production
-- Create new tag with form `v*.*.*` and target branch or commit need release and click `Publish release` button. CD Workflow will be triggered to build and deploy to production 
+- Create PR and Merge code into main from release or hotfix branch
+- Create new tag with form `v*.*.*` and target branch(`main`) or commit need release and click `Publish release` button. CD Workflow will be triggered to build and deploy to production 
 
 ![alt text](doc_images/image-9.png)
 
