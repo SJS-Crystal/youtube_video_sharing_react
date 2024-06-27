@@ -62,7 +62,7 @@ This is project for people can share any youtube videos. And other logged in use
    > `ssh-copy-id -i ~/.ssh/id_rsa.pub root@188.166.236.134`
 4. If this is first time you connect to this server, maybe you see a prompt like **Are you sure you want to continue connecting (yes/no)?**, let type `yes` > Enter
 5. `cat ~/.ssh/id_rsa` to get ssh private key and copy this and set **SERVER_SSH_KEY_1** secret on github. (*you can adjust ~/.ssh/id_rsa to your file you create above*)
-6. Set **SERVER_USER_1** environment secrets on every github environment
+6. Set **SERVER_USER_1** environment secrets on every github environment. **This user must has sudo Privileges**
 7. Set **DOMAIN_NAME_1** environment variables on every github environment
 
 
