@@ -62,7 +62,7 @@ This is project for people can share any youtube videos. And other logged in use
    > `ssh-copy-id -i ~/.ssh/id_rsa.pub root@188.166.236.134`
 4. If this is first time you connect to this server, maybe you see a prompt like **Are you sure you want to continue connecting (yes/no)?**, let type `yes` > Enter
 5. `cat ~/.ssh/id_rsa` to get ssh private key and copy this and set **SERVER_SSH_KEY_1** secret on github. (*you can adjust ~/.ssh/id_rsa to your file you create above*)
-6. Set **SERVER_HOST_1**, **SERVER_USER_1** environment secrets on every github environment
+6. Set **SERVER_USER_1** environment secrets on every github environment
 7. Set **DOMAIN_NAME_1** environment variables on every github environment
 
 
@@ -74,12 +74,12 @@ This is project for people can share any youtube videos. And other logged in use
 - In every github environment, set your **DOCKER_TOKEN** to your docker access token
 - In every github environment, set **ENV_FILE** secret to content in .env file corresponding
 
-    ENV in every environment: `production`, `development`, `test`, `staging` should look like this
+    - ENV in every environment: `production`, `development`, `test`, `staging` should look like this
 
   ![alt text](doc_images/image-1.png)
 
 
-    In `development` environment, can use many servers for deploying many feature branchs. It looks like this:
+    - In `development` environment, can use many servers for deploying many feature branchs. It looks like this:
 
   ![alt text](doc_images/image.png)
 

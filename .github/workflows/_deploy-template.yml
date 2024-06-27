@@ -24,7 +24,7 @@ on:
         type: string
 
 env:
-  HOST_SECRET_NAME: ${{ format('SERVER_HOST_{0}', inputs.serverSelection) }}
+  DOMAIN_KEY_NAME: ${{ format('DOMAIN_NAME_{0}', inputs.serverSelection) }}
   USER_SECRET_NAME: ${{ format('SERVER_USER_{0}', inputs.serverSelection) }}
   SSH_KEY_SECRET_NAME: ${{ format('SERVER_SSH_KEY_{0}', inputs.serverSelection) }}
 
@@ -54,7 +54,7 @@ jobs:
           fi
           echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
           chmod 400 server_ssh_file
-          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} '[ -f /etc/setup_done ] && exit 99 || exit 0'
+          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ vars[env.DOMAIN_KEY_NAME] }} '[ -f /etc/setup_done ] && exit 99 || exit 0'
         continue-on-error: true
 
       - name: Install dependencies
@@ -64,7 +64,7 @@ jobs:
           DOMAIN_ENV_NAME: ${{ format('DOMAIN_NAME_{0}', inputs.serverSelection) }}
           EMAIL: ${{ vars.SIGN_SSL_EMAIL || 'default@gmail.com' }}
         run: |
-          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} << 'EOF'
+          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ vars[env.DOMAIN_KEY_NAME] }} << 'EOF'
             sudo apt update
             sudo apt install -y docker-compose-v2
             sudo apt install -y certbot
@@ -85,9 +85,9 @@ jobs:
         run: |
           echo "${{ secrets[env.SSH_KEY_SECRET_NAME] }}" > server_ssh_file
           chmod 400 server_ssh_file
-          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} 'mkdir -p /home/project/'
-          scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }}:/home/project/
-          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ secrets[env.HOST_SECRET_NAME] }} << 'EOF'
+          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ vars[env.DOMAIN_KEY_NAME] }} 'mkdir -p /home/project/'
+          scp -i server_ssh_file -o StrictHostKeyChecking=no docker-compose.server.yml ${{ secrets[env.USER_SECRET_NAME] }}@${{ vars[env.DOMAIN_KEY_NAME] }}:/home/project/
+          ssh -i server_ssh_file -o StrictHostKeyChecking=no ${{ secrets[env.USER_SECRET_NAME] }}@${{ vars[env.DOMAIN_KEY_NAME] }} << 'EOF'
             export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
             export DOCKER_IMAGE_TAG=${{ inputs.DOCKER_IMAGE_TAG }}
             export DOCKER_IMAGE_NAME=${{ secrets.DOCKER_IMAGE_NAME }}
