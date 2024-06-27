@@ -12,8 +12,5 @@ RUN npm install
 # Copy the rest of the app's source code to WORKDIR
 COPY . .
 
-# Build the React app
-RUN npm run build
-
 # Set the command to run the app
 CMD ["npm", "start"]

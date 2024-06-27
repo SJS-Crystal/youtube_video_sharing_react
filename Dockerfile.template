@@ -1,0 +1,24 @@
+FROM node:21.7.1 as react_builder
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json to WORKDIR
+COPY package*.json ./
+COPY .env .
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the app's source code to WORKDIR
+COPY . .
+
+# Build the React app
+RUN npm run build
+
+FROM nginx:1.25.4
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
+COPY --from=react_builder /app/build .
+COPY ./default.conf /etc/nginx/conf.d/${DOMAIN_NAME}.conf
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

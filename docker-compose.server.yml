@@ -1,0 +1,10 @@
+version: '3'
+services:
+  frontend:
+    image: ${DOCKER_USERNAME}/${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}
+    ports:
+      - 443:443
+      - 80:80
+    volumes:
+      - .:/app
+      - /etc/letsencrypt:/etc/letsencrypt
